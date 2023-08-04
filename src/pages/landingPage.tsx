@@ -15,6 +15,12 @@ const LandingPage = () => {
                         Mantine docs
                     </Anchor>
                 </Text>
+                <Text>
+                    Create a table of reps that includes the following columns: First Name, Last Name, Email, Team, Total Revenue
+                </Text>
+                <Text>
+                    Add the following filters: Team Name, Opp Customer
+                </Text>
             </Container>
         </Paper>
     );
