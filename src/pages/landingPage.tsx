@@ -1,5 +1,5 @@
 import React from 'react';
-import { Paper, Container, Text, Title } from '@mantine/core';
+import { Paper, Container, Text, Title, Anchor } from '@mantine/core';
 
 const LandingPage = () => {
     return (
@@ -8,6 +8,12 @@ const LandingPage = () => {
                 <Title order={1}>Good luck!</Title>
                 <Text>
                     Please refer to read me or reach out with any questions
+                </Text>
+                <Text>
+                    It is recomended to use the Mantine Components&nbsp;&nbsp;
+                    <Anchor href="https://mantine.dev/" target="_blank">
+                        Mantine docs
+                    </Anchor>
                 </Text>
             </Container>
         </Paper>
