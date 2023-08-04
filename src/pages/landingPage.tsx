@@ -3,7 +3,7 @@ import { Paper, Container, Text, Title } from '@mantine/core';
 
 const LandingPage = () => {
     return (
-        <Paper shadow="xs" style={{ margin: '40px' }}>
+        <Paper shadow="md" p="xl">
             <Container size="md">
                 <Title order={1}>Good luck!</Title>
                 <Text>
