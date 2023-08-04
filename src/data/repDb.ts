@@ -6,9 +6,6 @@ export interface Representative {
     teamId: number;
 }
 
-// const teamsCount = 12; // Number of teams
-// const repsPerTeam = 5; // Representatives per team
-
 // const representatives = [];
 
 
@@ -17,10 +14,6 @@ export interface Representative {
 //     // Generate a random number between 1 and 12 (inclusive)
 //     return Math.floor(Math.random() * 12) + 1;
 // }
-
-// // Example usage
-// const randomTeamId = getRandomTeamId();
-// console.log(randomTeamId);
 
 // // Function to generate random names
 // function generateRandomName() {
@@ -61,13 +54,6 @@ export interface Representative {
 //     return `${name.toLowerCase().replace(" ", ".")}@example.com`;
 // }
 
-// // Function to shuffle an array
-// function shuffleArray(array) {
-//     for (let i = array.length - 1; i > 0; i--) {
-//         const j = Math.floor(Math.random() * (i + 1));
-//         [array[i], array[j]] = [array[j], array[i]];
-//     }
-// }
 
 // // Generate representatives
 
