@@ -11,7 +11,7 @@
 ![Team Filter](./public/team-filter.png)
 
 ## AC
-    + Create a table of reps that includes the following columns: First Name, Last Name, Email, Team, Total Revenue
+    + Create a table of reps that includes the following columns: Name (first + last), Email, Team, Total Revenue
     + Add the following filters: Team Name, Customer
     + use the date from `src/api
 ## Dev Notes
