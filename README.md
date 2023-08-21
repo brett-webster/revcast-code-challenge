@@ -1,4 +1,4 @@
-# Wire Frames
+## Wire Frames
 
 ![Example Table](./public/example-table.png)
 
@@ -10,14 +10,14 @@
 
 ![Team Filter](./public/team-filter.png)
 
-# AC
+## AC
     * Create a table of reps that includes the following columns: First Name, Last Name, Email, Team, Total Revenue
     
     * Add the following filters: Team Name, Customer
 
     * use the date from `src/api`
 
-# Dev Notes
+## Dev Notes
 
     * Mantine has been installed as an optional component library [Mantine Docs](https://mantine.dev/)
 
