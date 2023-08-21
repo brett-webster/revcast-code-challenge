@@ -11,16 +11,12 @@
 ![Team Filter](./public/team-filter.png)
 
 ## AC
-    (`*`) Create a table of reps that includes the following columns: First Name, Last Name, Email, Team, Total Revenue
-    
-    (`*`) Add the following filters: Team Name, Customer
-
-    (`*`) use the date from `src/api`
-
-## Dev Notes
-
-    (`*`) Mantine has been installed as an optional component library [Mantine Docs](https://mantine.dev/)
-    (`*`) Your designs do not need to match styling or layout the wire frame. They are there as a guide
+    + Create a table of reps that includes the following columns: First Name, Last Name, Email, Team, Total Revenue
+    + Add the following filters: Team Name, Customer
+    + use the date from `src/api
+##ev Notes
+     Mantine has been installed as an optional component library [Mantine Docs](https://mantine.dev/)
+    + Your designs do not need to match styling or layout the wire frame. They are there as a guide
 
 
 # Getting Started with Create React App
