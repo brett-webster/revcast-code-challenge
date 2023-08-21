@@ -1,3 +1,27 @@
+# Wire Frames
+
+![Example Table](./public/example-table.png)
+
+![Customer Dropdown](./public/customer-dropdown.png)
+
+![Team Dropdown](./public/dropdown-teams.png)
+
+![Company Filter](./public/company-filter.png)
+
+![Team Filter](./public/team-filter.png)
+
+# AC
+    * Create a table of reps that includes the following columns: First Name, Last Name, Email, Team, Total Revenue
+    
+    * Add the following filters: Team Name, Customer
+
+    * use the date from `src/api`
+
+# Dev Notes
+
+    * Mantine has been installed as an optional component library [Mantine Docs](https://mantine.dev/)
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

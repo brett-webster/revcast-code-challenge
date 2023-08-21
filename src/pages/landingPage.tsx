@@ -7,10 +7,10 @@ const LandingPage = () => {
             <Container size="md">
                 <Title order={1}>Good luck!</Title>
                 <Text>
-                    Please refer to read me or reach out with any questions
+                    Please refer to README.md or reach out with any questions
                 </Text>
                 <Text>
-                    It is recomended to use the Mantine Components&nbsp;&nbsp;
+                    It is optional to use Mantine Components&nbsp;&nbsp;
                     <Anchor href="https://mantine.dev/" target="_blank">
                         Mantine docs
                     </Anchor>
