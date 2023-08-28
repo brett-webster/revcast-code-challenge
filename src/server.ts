@@ -1,11 +1,13 @@
-// tsc src/server.ts ---> node server.js [whichever file server.js is emitted to...]
-// "start": "react-scripts start & nodemon src/server.ts",
-// "build": "react-scripts build & ts-node src/server.ts",
-// "proxy": "http://localhost:3001"
+// npm START -------> "start": "NODE_ENV=development react-scripts start & NODE_ENV=development nodemon src/server.ts",
+// npm run BUILD ---> "build": "react-scripts build",
+// npm run DEPLOY --> "deploy": "NODE_ENV=production ts-node src/server.ts",
+// "proxy": "http://localhost:4000"
 
 // --------
 
 import express, { Request, Response, NextFunction, Application } from "express";
+import path from "path";
+import * as dotenv from "dotenv";
 import type { Representative, Team, SalesOpportunity } from "./data";
 
 // Importing helper fxns containing filtering logic
@@ -39,11 +41,34 @@ type nestedFilteredObjectsForClientType = {
 
 // --------
 
+dotenv.config();
+
+// For production mode ONLY ('npm run build' first in CLI...) -- ENSURE 2 below path.joins are correct for file directory hierarchy
+if (process.env.NODE_ENV === "production") {
+  // console.log(process.env); // REMOVE, TESTING FOR ENTERING CONDITIONAL
+  console.log(
+    "DEPLOYED, RUNNING IN PRODUCTION MODE ON port 4000 at 'http://localhost:4000/' ..."
+  );
+  // console.log(path.join(__dirname, "../build")); // REMOVE
+  // console.log(path.join(__dirname, "../build/index.html")); // REMOVE
+
+  // statically serve everything in the build folder on the route '/build', if already built -- this includes a pre-built index.html
+  app.use(express.static(path.join(__dirname, "../build")));
+  // serve index.html on the route '/'
+  app.get("/", (req: Request, res: Response) => {
+    return res
+      .status(200)
+      .sendFile(path.join(__dirname, "../build/index.html"));
+  });
+}
+
+// --------
+
 // Assemble sorted list of teams for presentation in dropdown menu (no dups here)
 app.get(
   "/api/getUniqueSortedTeamList",
   (req: Request, res: Response, next: NextFunction): Response => {
-    const teamListArray = GetUniqueSortedTeamList(); // Helper fxn
+    const teamListArray: string[] = GetUniqueSortedTeamList(); // Helper fxn
 
     return res.status(200).json(teamListArray);
   }
@@ -53,7 +78,7 @@ app.get(
 app.get(
   "/api/getUniqueSortedCustomerList",
   (req: Request, res: Response, next: NextFunction): Response => {
-    const customerListArray = GetUniqueSortedCustomerList(); // Helper fxn
+    const customerListArray: string[] = GetUniqueSortedCustomerList(); // Helper fxn
 
     return res.status(200).json(customerListArray);
   }
@@ -63,7 +88,8 @@ app.get(
 app.get(
   "/api/getEntireUniqueSortedArrayOfObjs",
   (req: Request, res: Response, next: NextFunction): Response => {
-    const fullResultsOfDB = GetEntireUniqueSortedArrayOfObjs(); // Helper fxn
+    const fullResultsOfDB: augmentedRepObjectType[] =
+      GetEntireUniqueSortedArrayOfObjs(); // Helper fxn
 
     return res.status(200).json(fullResultsOfDB);
   }
@@ -77,7 +103,7 @@ app.post(
   "/api/bothDropdownsBlankThenTeamSelected",
   (req: Request, res: Response, next: NextFunction): Response => {
     // console.log(req.body); // REMOVE
-    const teamName: string = req.body.teamName;
+    const teamName: string = req.body.selectedTeam;
     const threeFilteredObjectsForClient: nestedFilteredObjectsForClientType =
       TeamNewlySelectedOrReplacedAndCustomerBlank(teamName);
 
@@ -92,9 +118,10 @@ app.post(
   "/api/bothDropdownsBlankThenCustomerSelected",
   (req: Request, res: Response, next: NextFunction): Response => {
     // console.log(req.body); // REMOVE
-    const customerName: string = req.body.customerName;
+    const customerName: string = req.body.selectedCustomer;
     const threeFilteredObjectsForClient: nestedFilteredObjectsForClientType =
       CustomerNewlySelectedOrReplacedAndTeamBlank(customerName);
+    // console.log(threeFilteredObjectsForClient); // REMOVE
 
     return res.status(200).json(threeFilteredObjectsForClient);
   }
@@ -102,7 +129,7 @@ app.post(
 
 // --------
 
-// Filter for ONLY team after previously selected team is replaced by another selection (could be blank / 'ALL'):  assemble object in the below format to return to client
+// Filter for ONLY team after previously selected team is replaced by another selection (could be blank / ''):  assemble object in the below format to return to client
 // NOTE:  Below logic is identical to "/api/bothDropdownsBlankThenTeamSelected" endpoint
 app.post(
   "/api/onlyTeamDisplayedThenDifferentTeamSelected",
@@ -118,7 +145,7 @@ app.post(
 
 // --------
 
-// Filter for ONLY customer after previously selected customer is replaced by another selection (could be blank / 'ALL'):  assemble object in the below format to return to client
+// Filter for ONLY customer after previously selected customer is replaced by another selection (could be blank / ''):  assemble object in the below format to return to client
 // NOTE:  Below logic is identical to "/api/bothDropdownsBlankThenCustomerSelected" endpoint
 app.post(
   "/api/onlyCustomerDisplayedThenDifferentCustomerSelected",
@@ -141,14 +168,14 @@ app.post(
   "/api/onlyCustomerDisplayedThenTeamSelected",
   (req: Request, res: Response, next: NextFunction): Response => {
     // console.log(req.body); // REMOVE
-    const { teamName }: { teamName: string } = req.body; // destructuring
+    const { selectedTeam }: { selectedTeam: string } = req.body; // destructuring
     const {
       customerCurrentSelectionResults,
     }: { customerCurrentSelectionResults: augmentedRepObjectType[] } = req.body;
 
     const threeFilteredObjectsForClient: nestedFilteredObjectsForClientType =
       CustomerDisplayedThenTeamSelected(
-        teamName,
+        selectedTeam,
         customerCurrentSelectionResults
       );
 
@@ -165,14 +192,14 @@ app.post(
   "/api/onlyTeamDisplayedThenCustomerSelected",
   (req: Request, res: Response, next: NextFunction): Response => {
     // console.log(req.body); // REMOVE
-    const { customerName }: { customerName: string } = req.body; // destructuring
+    const { selectedCustomer }: { selectedCustomer: string } = req.body; // destructuring
     const {
       teamCurrentSelectionResults,
     }: { teamCurrentSelectionResults: augmentedRepObjectType[] } = req.body;
 
     const threeFilteredObjectsForClient: nestedFilteredObjectsForClientType =
       TeamDisplayedThenCustomerSelected(
-        customerName,
+        selectedCustomer,
         teamCurrentSelectionResults
       );
 
@@ -188,14 +215,14 @@ app.post(
   "/api/bothTeamAndCustomerSelectedThenDifferentTeamSelected",
   (req: Request, res: Response, next: NextFunction): Response => {
     // console.log(req.body); // REMOVE
-    const { teamName }: { teamName: string } = req.body; // destructuring
+    const { selectedTeam }: { selectedTeam: string } = req.body; // destructuring
     const {
       customerCurrentSelectionResults,
     }: { customerCurrentSelectionResults: augmentedRepObjectType[] } = req.body;
 
     const threeFilteredObjectsForClient: nestedFilteredObjectsForClientType =
       CustomerDisplayedThenTeamSelected(
-        teamName,
+        selectedTeam,
         customerCurrentSelectionResults
       );
 
@@ -211,14 +238,14 @@ app.post(
   "/api/bothTeamAndCustomerSelectedThenDifferentCustomerSelected",
   (req: Request, res: Response, next: NextFunction): Response => {
     // console.log(req.body); // REMOVE
-    const { customerName }: { customerName: string } = req.body; // destructuring
+    const { selectedCustomer }: { selectedCustomer: string } = req.body; // destructuring
     const {
       teamCurrentSelectionResults,
     }: { teamCurrentSelectionResults: augmentedRepObjectType[] } = req.body;
 
     const threeFilteredObjectsForClient: nestedFilteredObjectsForClientType =
       TeamDisplayedThenCustomerSelected(
-        customerName,
+        selectedCustomer,
         teamCurrentSelectionResults
       );
 
@@ -262,9 +289,10 @@ app.use(
 
 // --------
 
-// Express dev server:  provides API data & business logic --> port 3001 in dev mode
-// Prod mode:  Everything served off of single port 3000 in prod mode
-app.listen(3001);
+// Create-react-app server:  front-end html + React bundle --> port 3000 in dev mode, utilizing 4000 in prod mode
+// Express dev server:  provides API data & business logic --> port 4000 in both dev mode & in prod mode
+// Prod mode:  Everything served off of single port 4000 once built/deployed
+app.listen(4000);
 
 // --------
 

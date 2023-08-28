@@ -45,7 +45,7 @@ function GetUniqueSortedCustomerList(): string[] {
 
 function GetEntireUniqueSortedArrayOfObjs(): augmentedRepObjectType[] {
   const fullResultsOfDB: augmentedRepObjectType[] =
-    FilterEntireDatabaseByTeamName("ALL");
+    FilterEntireDatabaseByTeamName("");
   //   console.log(fullResultsOfDB); // REMOVE
 
   return fullResultsOfDB;
@@ -65,9 +65,9 @@ function FilterEntireDatabaseByTeamName(
   //   (team: Team) => team.name === teamName
   // )!.id;
 
-  // ONLY filter if an actual team name has been selected, defaulting to entire database if not (i.e. if reset to blank or 'ALL)
+  // ONLY filter if an actual team name has been selected, defaulting to entire database if not (i.e. if reset to blank or '')
   let repsOnTeam: Representative[] = reps.slice();
-  if (teamName !== "ALL") {
+  if (teamName !== "") {
     repsOnTeam = reps.filter((rep: Representative) => rep.teamId === teamID);
   }
   //   console.log(repsOnTeam, repsOnTeam.length, teamID); // REMOVE
@@ -95,7 +95,7 @@ function FilterEntireDatabaseByTeamName(
     // }
     // console.log(total); // REMOVE above
 
-    // Match teamID to team name (in case 'ALL' teams are selected)
+    // Match teamID to team name (in case all teams are selected)
     const teamNameFromDB: string = teams.find(
       (team: Team) => repObject.teamId === team.id
     )!.name;
@@ -117,10 +117,10 @@ function FilterEntireDatabaseByTeamName(
 function FilterEntireDatabaseByCustomerName(
   customerName: string
 ): augmentedRepObjectType[] {
-  // ONLY filter if an actual customer name has been selected, defaulting to entire database if not (i.e. if reset to blank or 'ALL)
+  // ONLY filter if an actual customer name has been selected, defaulting to entire database if not (i.e. if reset to blank or '')
   // NOTE:  There will be duplicate repIDs w/in the filtered array -- these need to be aggregated
   let salesOppsWithCustomerNameOnly: SalesOpportunity[] = salesOpps.slice();
-  if (customerName !== "ALL") {
+  if (customerName !== "") {
     salesOppsWithCustomerNameOnly = salesOpps.filter(
       (salesOpp: SalesOpportunity) => salesOpp.customerName === customerName
     );
@@ -233,15 +233,15 @@ function TeamDisplayedThenCustomerSelected(
     FilterEntireDatabaseByCustomerName(customerName); // invoking 'sub-helper' fxn above
   //   console.log(finalRepArrayForStorage); // REMOVE
 
-  // Below logic uses the teamCurrentSelectionResults and filters out only the newly selected customer (assuming not blank / 'ALL' selected)
-  // Iterate thru teamCurrentSelectionResults, for each unique rep re-calculate aggregate revenue figure so that it is ONLY for the newly selected company
+  // Below logic uses the teamCurrentSelectionResults and filters out only the newly selected customer (assuming not blank / '' selected)
+  // Iterate thru teamCurrentSelectionResults, for each unique rep re-calculate aggregate revenue figure so that it is ONLY for the newly selected customer
   const finalRepArrayForDisplay: augmentedRepObjectType[] = [];
   teamCurrentSelectionResults.forEach((repObject: augmentedRepObjectType) => {
     const repID: number = repObject.id;
 
-    // ONLY filter if an actual customer name has been selected, defaulting to entire database if not (i.e. if reset to blank or 'ALL)
+    // ONLY filter if an actual customer name has been selected, defaulting to entire database if not (i.e. if reset to blank or '')
     let currentRepOnlySalesOpps: SalesOpportunity[] = salesOpps.slice();
-    if (customerName !== "ALL") {
+    if (customerName !== "") {
       // Aggregate revenue for current rep by referencing salesOpps array & filtering for customerName
       currentRepOnlySalesOpps = salesOpps.filter(
         (salesOpp: SalesOpportunity) => salesOpp.repId === repID
@@ -249,19 +249,20 @@ function TeamDisplayedThenCustomerSelected(
     }
     // console.log(currentRepOnlySalesOpps); // REMOVE
 
-    const currentRepOnlySalesOppsForSelectCompany: SalesOpportunity[] =
+    const currentRepOnlySalesOppsForSelectCustomer: SalesOpportunity[] =
       currentRepOnlySalesOpps.filter(
         (salesOpp: SalesOpportunity) => salesOpp.customerName === customerName
       );
-    // console.log(currentRepOnlySalesOppsForSelectCompany); // REMOVE
+    // console.log(currentRepOnlySalesOppsForSelectCustomer); // REMOVE
 
     // Aggregate revenue for each rep using reduce method
-    const totalRevenue: number = currentRepOnlySalesOppsForSelectCompany.reduce(
-      (total: number, current: SalesOpportunity) => {
-        return total + current.revenue;
-      },
-      0
-    );
+    const totalRevenue: number =
+      currentRepOnlySalesOppsForSelectCustomer.reduce(
+        (total: number, current: SalesOpportunity) => {
+          return total + current.revenue;
+        },
+        0
+      );
 
     const augmentedRepObject: augmentedRepObjectType = {
       ...repObject,
@@ -294,16 +295,15 @@ function CustomerDisplayedThenTeamSelected(
   const finalRepArrayForStorage: augmentedRepObjectType[] =
     FilterEntireDatabaseByTeamName(teamName); // invoking 'sub-helper' fxn above
 
-  // ONLY filter if an actual team name has been selected, defaulting to entire database if not (i.e. if reset to blank or 'ALL)
+  // ONLY filter if an actual team name has been selected, defaulting to entire database if not (i.e. if reset to blank or '')
   let finalRepArrayForDisplay: augmentedRepObjectType[] =
     customerCurrentSelectionResults.slice();
-  if (teamName !== "ALL") {
-    // Below logic uses the customerCurrentSelectionResults and simply filters out only the newly selected team name if not blank / 'ALL' (no aggregate revenue re-calc is required, i.e. it will remain unchanged from prior calc)
+  if (teamName !== "") {
+    // Below logic uses the customerCurrentSelectionResults and simply filters out only the newly selected team name if not blank / '' (no aggregate revenue re-calc is required, i.e. it will remain unchanged from prior calc)
     finalRepArrayForDisplay = customerCurrentSelectionResults.filter(
       (repObj: augmentedRepObjectType) => repObj.teamName === teamName
     );
   }
-  //   console.log(finalRepArrayForDisplay); // REMOVE
 
   // Bundling the 3 objects below to send back to client
   const teamCurrentSelectionResults: augmentedRepObjectType[] =
