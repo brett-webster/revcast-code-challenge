@@ -17,10 +17,6 @@ import type {
 
 // --------
 
-// console.log(salesOpps); // REMOVE
-
-// --------
-
 function GetUniqueSortedTeamList(): string[] {
   const teamListArray: string[] = teams.map((elem: Team) => elem.name);
   teamListArray.sort();
@@ -35,7 +31,6 @@ function GetUniqueSortedCustomerList(): string[] {
   salesOpps.forEach((elem: SalesOpportunity) =>
     customerListSet.add(elem.customerName)
   );
-  // console.log(customerListSet, [...customerListSet].length);  // REMOVE
   const customerListArray: string[] = [...customerListSet].sort();
 
   return customerListArray;
@@ -46,7 +41,6 @@ function GetUniqueSortedCustomerList(): string[] {
 function GetEntireUniqueSortedArrayOfObjs(): augmentedRepObjectType[] {
   const fullResultsOfDB: augmentedRepObjectType[] =
     FilterEntireDatabaseByTeamName("");
-  //   console.log(fullResultsOfDB); // REMOVE
 
   return fullResultsOfDB;
 }
@@ -60,17 +54,12 @@ function FilterEntireDatabaseByTeamName(
   const teamID: number | undefined = teams.find(
     (team: Team) => team.name === teamName
   )?.id;
-  // ALTERNATIVE - remove
-  // const teamID: number = teams.find(
-  //   (team: Team) => team.name === teamName
-  // )!.id;
 
   // ONLY filter if an actual team name has been selected, defaulting to entire database if not (i.e. if reset to blank or '')
   let repsOnTeam: Representative[] = reps.slice();
   if (teamName !== "") {
     repsOnTeam = reps.filter((rep: Representative) => rep.teamId === teamID);
   }
-  //   console.log(repsOnTeam, repsOnTeam.length, teamID); // REMOVE
 
   // Iterate thru array of repsOnTeam, adding (1) actual teamName as a property and (2) aggregating & adding revenue from salesOpps array as another property
   // Then add each revised object to finalRepArrayForDisplay
@@ -88,12 +77,6 @@ function FilterEntireDatabaseByTeamName(
       },
       0
     );
-    // console.log(currentRepOnlySalesOpps, totalRevenue); // REMOVE below
-    // let total = 0;
-    // for (let i = 0; i < currentRepOnlySalesOpps.length; i++) {
-    //   total += currentRepOnlySalesOpps[i].revenue;
-    // }
-    // console.log(total); // REMOVE above
 
     // Match teamID to team name (in case all teams are selected)
     const teamNameFromDB: string = teams.find(
@@ -128,7 +111,6 @@ function FilterEntireDatabaseByCustomerName(
 
   // Create list of repIds
   const repIDarray: number[] = reps.map((elem) => elem.id);
-  //   console.log(repIDarray, repIDarray.length); // REMOVE
 
   // Iterate thru unique list of repIds (customerListArray) & for each individual rep, (1) calculate and save aggregate revenue (2) create an augmented object containing additional details like name, email, team name, etc.
   // Then add each revised object to finalRepArrayForDisplay
@@ -147,13 +129,12 @@ function FilterEntireDatabaseByCustomerName(
       },
       0
     );
-    // console.log(currentRepOnlySalesOpps, totalRevenue); // REMOVE
 
     // Access firstName, lastName, email from reps array
     const currentRepObj: Representative = reps.find(
       (rep: Representative) => rep.id === repID
     )!; // NOTE:  non-null assertion operator (!) required here
-    // console.log(currentRepObj, " ...NEXT..."); // REMOVE
+
     // destructure object here using "in-line"
     const { firstName, lastName, email, teamId }: Representative =
       currentRepObj;
@@ -231,7 +212,6 @@ function TeamDisplayedThenCustomerSelected(
   // Invoke 'sub-helper' fxn to generate results filtered by customer name from entirety of databases
   const finalRepArrayForStorage: augmentedRepObjectType[] =
     FilterEntireDatabaseByCustomerName(customerName); // invoking 'sub-helper' fxn above
-  //   console.log(finalRepArrayForStorage); // REMOVE
 
   // Below logic uses the teamCurrentSelectionResults and filters out only the newly selected customer (assuming not blank / '' selected)
   // Iterate thru teamCurrentSelectionResults, for each unique rep re-calculate aggregate revenue figure so that it is ONLY for the newly selected customer
@@ -247,13 +227,11 @@ function TeamDisplayedThenCustomerSelected(
         (salesOpp: SalesOpportunity) => salesOpp.repId === repID
       );
     }
-    // console.log(currentRepOnlySalesOpps); // REMOVE
 
     const currentRepOnlySalesOppsForSelectCustomer: SalesOpportunity[] =
       currentRepOnlySalesOpps.filter(
         (salesOpp: SalesOpportunity) => salesOpp.customerName === customerName
       );
-    // console.log(currentRepOnlySalesOppsForSelectCustomer); // REMOVE
 
     // Aggregate revenue for each rep using reduce method
     const totalRevenue: number =

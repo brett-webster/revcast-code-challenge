@@ -102,7 +102,6 @@ app.get(
 app.post(
   "/api/onlyTeamSelected",
   (req: Request, res: Response, next: NextFunction): Response => {
-    // console.log(req.body); // REMOVE
     const teamName: string = req.body.selectedTeam;
     const threeFilteredObjectsForClient: nestedFilteredObjectsForClientType =
       TeamNewlySelectedOrReplacedAndCustomerBlank(teamName);
@@ -117,49 +116,13 @@ app.post(
 app.post(
   "/api/onlyCustomerSelected",
   (req: Request, res: Response, next: NextFunction): Response => {
-    // console.log(req.body); // REMOVE
     const customerName: string = req.body.selectedCustomer;
     const threeFilteredObjectsForClient: nestedFilteredObjectsForClientType =
       CustomerNewlySelectedOrReplacedAndTeamBlank(customerName);
-    // console.log(threeFilteredObjectsForClient); // REMOVE
 
     return res.status(200).json(threeFilteredObjectsForClient);
   }
 );
-
-// --------
-
-// REDUNDANT LOGIC - TO REMOVE
-// // Filter for ONLY team after previously selected team is replaced by another selection (could be blank / ''):  assemble object in the below format to return to client
-// // NOTE:  Below logic is identical to "/api/onlyTeamSelected" endpoint
-// app.post(
-//   "/api/onlyTeamDisplayedThenDifferentTeamSelected",
-//   (req: Request, res: Response, next: NextFunction): Response => {
-//     // console.log(req.body); // REMOVE
-//     const teamName: string = req.body.teamName;
-//     const threeFilteredObjectsForClient: nestedFilteredObjectsForClientType =
-//       TeamNewlySelectedOrReplacedAndCustomerBlank(teamName);
-
-//     return res.status(200).json(threeFilteredObjectsForClient);
-//   }
-// );
-
-// --------
-
-// REDUNDANT LOGIC - TO REMOVE
-// // Filter for ONLY customer after previously selected customer is replaced by another selection (could be blank / ''):  assemble object in the below format to return to client
-// // NOTE:  Below logic is identical to "/api/onlyCustomerSelected" endpoint
-// app.post(
-//   "/api/onlyCustomerDisplayedThenDifferentCustomerSelected",
-//   (req: Request, res: Response, next: NextFunction): Response => {
-//     // console.log(req.body); // REMOVE
-//     const customerName: string = req.body.customerName;
-//     const threeFilteredObjectsForClient: nestedFilteredObjectsForClientType =
-//       CustomerNewlySelectedOrReplacedAndTeamBlank(customerName);
-
-//     return res.status(200).json(threeFilteredObjectsForClient);
-//   }
-// );
 
 // --------
 
@@ -170,7 +133,6 @@ app.post(
 app.post(
   "/api/bothSelectedTeamJustChanged",
   (req: Request, res: Response, next: NextFunction): Response => {
-    // console.log(req.body); // REMOVE
     const { selectedTeam }: { selectedTeam: string } = req.body; // destructuring
     const {
       customerCurrentSelectionResults,
@@ -195,7 +157,6 @@ app.post(
 app.post(
   "/api/bothSelectedCustomerJustChanged",
   (req: Request, res: Response, next: NextFunction): Response => {
-    // console.log(req.body); // REMOVE
     const { selectedCustomer }: { selectedCustomer: string } = req.body; // destructuring
     const {
       teamCurrentSelectionResults,
@@ -210,54 +171,6 @@ app.post(
     return res.status(200).json(threeFilteredObjectsForClient);
   }
 );
-
-// --------
-
-// REDUNDANT LOGIC - TO REMOVE
-// // Case where BOTH customer AND team are selected & user selects different non-blank team
-// // NOTE:  Below logic is identical to "/api/bothSelectedTeamJustChanged" endpoint
-// app.post(
-//   "/api/bothTeamAndCustomerSelectedThenDifferentTeamSelected",
-//   (req: Request, res: Response, next: NextFunction): Response => {
-//     // console.log(req.body); // REMOVE
-//     const { selectedTeam }: { selectedTeam: string } = req.body; // destructuring
-//     const {
-//       customerCurrentSelectionResults,
-//     }: { customerCurrentSelectionResults: augmentedRepObjectType[] } = req.body;
-
-//     const threeFilteredObjectsForClient: nestedFilteredObjectsForClientType =
-//       CustomerDisplayedThenTeamSelected(
-//         selectedTeam,
-//         customerCurrentSelectionResults
-//       );
-
-//     return res.status(200).json(threeFilteredObjectsForClient);
-//   }
-// );
-
-// --------
-
-// REDUNDANT LOGIC - TO REMOVE
-// // Case where BOTH customer AND team are selected & user selects different non-blank customer
-// // NOTE:  Below logic is identical to "/api/bothSelectedCustomerJustChanged" endpoint
-// app.post(
-//   "/api/bothTeamAndCustomerSelectedThenDifferentCustomerSelected",
-//   (req: Request, res: Response, next: NextFunction): Response => {
-//     // console.log(req.body); // REMOVE
-//     const { selectedCustomer }: { selectedCustomer: string } = req.body; // destructuring
-//     const {
-//       teamCurrentSelectionResults,
-//     }: { teamCurrentSelectionResults: augmentedRepObjectType[] } = req.body;
-
-//     const threeFilteredObjectsForClient: nestedFilteredObjectsForClientType =
-//       TeamDisplayedThenCustomerSelected(
-//         selectedCustomer,
-//         teamCurrentSelectionResults
-//       );
-
-//     return res.status(200).json(threeFilteredObjectsForClient);
-//   }
-// );
 
 // --------
 

@@ -6,12 +6,16 @@ import type {
   augmentedRepObjectType,
   nestedFilteredObjectsForClientType,
 } from "../server";
+import assembleBundledRowsForDisplayHelperFxn from "./assembleBundledRowsForDisplayHelperFxn";
+import {
+  TeamDropdownFilter,
+  CustomerDropdownFilter,
+} from "./dropdownComponents";
 
 // ---------
 
 const LandingPage = (): JSX.Element => {
   // --------- useState hooks --------
-  // https://www.sharooq.com/solved-type-x-is-not-assignable-to-type-never-using-typescript-in-react
 
   // On initial pageload only, the below 3 items are fetched from server and stored as cache.  1st two are persisted across entire session
   const [teamList, setTeamList] = useState<string[]>([]);
@@ -80,7 +84,7 @@ const LandingPage = (): JSX.Element => {
 
         // Bundle up each 'rep row' containing 4 columns:  Name, Eamil, Team, Total Revenue
         const bundledInitialRowsToDisplay: JSX.Element[] =
-          assembleBundledRowsForDisplay(rowResultsOfDB);
+          assembleBundledRowsForDisplayHelperFxn(rowResultsOfDB);
 
         // console.log(bundledInitialRowsToDisplay); // REMOVE
         setRowResultsToDisplay(bundledInitialRowsToDisplay);
@@ -171,123 +175,11 @@ const LandingPage = (): JSX.Element => {
     if (rowResultsOfDB) {
       // Bundle up latest result and reset state -- each 'rep row' contains 4 columns:  Name, Eamil, Team, Total Revenue
       const bundledRowsToDisplay: JSX.Element[] =
-        assembleBundledRowsForDisplay(rowResultsOfDB);
+        assembleBundledRowsForDisplayHelperFxn(rowResultsOfDB);
 
       setRowResultsToDisplay(bundledRowsToDisplay);
     }
   }, [rowResultsOfDB]); // end useEffect hook #3 (onChange of rowResultsOfDB)
-
-  // --------- Helper fxn(s) -----------
-
-  // #1:  Invoked above 2 different times to assemble array of JSX.Elements for display
-  function assembleBundledRowsForDisplay(
-    rowResultsFromDB: augmentedRepObjectType[]
-  ): JSX.Element[] {
-    // Bundle up latest result and reset state -- each 'rep row' contains 4 columns:  Name, Eamil, Team, Total Revenue
-    const bundledRowsToDisplay: JSX.Element[] = rowResultsFromDB.map(
-      (elementObject: augmentedRepObjectType) => {
-        const keyID: number = elementObject.id;
-        const name: string =
-          elementObject.lastName + ", " + elementObject.firstName;
-        const email: string = elementObject.email;
-        const team: string = elementObject.teamName;
-        const totalRevenue: string = `$${Math.round(
-          Number(elementObject.totalRevenue) / 1000
-        ).toLocaleString("en-US")}k`;
-        const spanSpacing1: JSX.Element = (
-          <span key={`span1${keyID}`}>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          </span>
-        );
-        const spanSpacing2: JSX.Element = (
-          <span key={`span2${keyID}`}>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          </span>
-        );
-        const spanSpacing3: JSX.Element = (
-          <span key={`span3${keyID}`}>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          </span>
-        );
-        return (
-          <li key={keyID}>
-            {[
-              name,
-              spanSpacing1,
-              email,
-              spanSpacing2,
-              team,
-              spanSpacing3,
-              totalRevenue,
-            ]}
-          </li>
-        );
-      }
-    );
-    return bundledRowsToDisplay;
-  }
-
-  // --------- Components - Currently 2 basic dropdown filters -----------
-
-  type DropdownProps = {
-    options: string[];
-  };
-
-  // https://react-typescript-cheatsheet.netlify.app/docs/basic/getting-started/function_components/
-  // { options}: { options: DropdownProps} <-- props passed down
-  const TeamDropdownFilter = (options: DropdownProps): JSX.Element => {
-    const handleOptionChange = (
-      event: React.ChangeEvent<HTMLSelectElement>
-    ): void => {
-      setSelectedTeam(event.target.value);
-      setTeamOrCustomerChangedFlag("TEAM changed");
-    };
-
-    return (
-      <div>
-        <select
-          id="teamDropdown"
-          value={selectedTeam || ""}
-          onChange={handleOptionChange}
-        >
-          <option value="">-- ALL TEAMS --</option>
-          {teamList.map((option: string) => (
-            <option key={option} value={option}>
-              {option}
-            </option>
-          ))}
-        </select>
-      </div>
-    );
-  };
-
-  // ---------
-
-  const CustomerDropdownFilter = (options: DropdownProps): JSX.Element => {
-    const handleOptionChange = (
-      event: React.ChangeEvent<HTMLSelectElement>
-    ): void => {
-      setSelectedCustomer(event.target.value);
-      setTeamOrCustomerChangedFlag("CUSTOMER changed");
-    };
-
-    return (
-      <div>
-        <select
-          id="customerDropdown"
-          value={selectedCustomer || ""}
-          onChange={handleOptionChange}
-        >
-          <option value="">-- ALL CUSTOMERS --</option>
-          {customerList.map((option: string) => (
-            <option key={option} value={option}>
-              {option}
-            </option>
-          ))}
-        </select>
-      </div>
-    );
-  };
 
   // --------- Returning LandingPage component ----------
 
@@ -314,8 +206,18 @@ const LandingPage = (): JSX.Element => {
         <br></br>
         <br></br>
         <div style={{ display: "flex", justifyContent: "none" }}>
-          <TeamDropdownFilter options={teamList} />
-          <CustomerDropdownFilter options={customerList} />
+          <TeamDropdownFilter
+            teamList={teamList}
+            setSelectedTeam={setSelectedTeam}
+            setTeamOrCustomerChangedFlag={setTeamOrCustomerChangedFlag}
+            selectedTeam={selectedTeam}
+          />
+          <CustomerDropdownFilter
+            customerList={customerList}
+            setSelectedCustomer={setSelectedCustomer}
+            setTeamOrCustomerChangedFlag={setTeamOrCustomerChangedFlag}
+            selectedCustomer={selectedCustomer}
+          />
         </div>
         <br></br>
         <br></br>
