@@ -103,27 +103,22 @@ const LandingPage = (): JSX.Element => {
       // Dropdowns reset to initial state (both blank/'')
       if (selectedTeam === "" && selectedCustomer === "") {
         response = null;
-        // setting = to cached state here
+        // setting = to cached state here, no endpoint accessed
         setRowResultsToDisplay(fullRowResultsToDisplay);
       }
 
       // Only TEAM selected
       if (selectedTeam && selectedCustomer === "") {
-        response = await axios.post("/api/bothDropdownsBlankThenTeamSelected", {
+        response = await axios.post("/api/onlyTeamSelected", {
           selectedTeam,
         });
-        // SAME LOGIC FOR FOLLOWING ENDPOINT:
-        // "/api/onlyTeamDisplayedThenDifferentTeamSelected"
       }
 
       // Only CUSTOMER selected
       if (selectedTeam === "" && selectedCustomer) {
-        response = await axios.post(
-          "/api/bothDropdownsBlankThenCustomerSelected",
-          { selectedCustomer }
-        );
-        // SAME LOGIC APPLIES FOR FOLLOWING ENDPOINT:
-        // "/api/onlyCustomerDisplayedThenDifferentCustomerSelected"
+        response = await axios.post("/api/onlyCustomerSelected", {
+          selectedCustomer,
+        });
       }
 
       // Both selected, TEAM is new
@@ -135,12 +130,10 @@ const LandingPage = (): JSX.Element => {
         const customerCurrentSelectionResults: augmentedRepObjectType[] =
           threeFilteredObjectsCache!.customerCurrentSelectionResults;
 
-        response = await axios.post(
-          "/api/onlyCustomerDisplayedThenTeamSelected",
-          { selectedTeam, customerCurrentSelectionResults }
-        );
-        // SAME LOGIC APPLIES FOR FOLLOWING ENDPOINT:
-        // "/api/bothTeamAndCustomerSelectedThenDifferentTeamSelected"
+        response = await axios.post("/api/bothSelectedTeamJustChanged", {
+          selectedTeam,
+          customerCurrentSelectionResults,
+        });
       }
 
       // Both selected, CUSTOMER is new
@@ -152,12 +145,10 @@ const LandingPage = (): JSX.Element => {
         const teamCurrentSelectionResults: augmentedRepObjectType[] =
           threeFilteredObjectsCache!.teamCurrentSelectionResults;
 
-        response = await axios.post(
-          "/api/onlyTeamDisplayedThenCustomerSelected",
-          { selectedCustomer, teamCurrentSelectionResults }
-        );
-        // SAME LOGIC APPLIES FOR FOLLOWING ENDPOINT:
-        // "/api/bothTeamAndCustomerSelectedThenDifferentCustomerSelected"
+        response = await axios.post("/api/bothSelectedCustomerJustChanged", {
+          selectedCustomer,
+          teamCurrentSelectionResults,
+        });
       }
 
       // --- end conditionals

@@ -97,10 +97,10 @@ app.get(
 
 // --------
 
-// Filter for ONLY team:  assemble object in the below format to return to client
+// Filter for ONLY team (swapping out current team selection or from blank):  assemble object in the below format to return to client
 // Format:  {firstName, lastName, email, teamName, totalRevenue, teamId, id}
 app.post(
-  "/api/bothDropdownsBlankThenTeamSelected",
+  "/api/onlyTeamSelected",
   (req: Request, res: Response, next: NextFunction): Response => {
     // console.log(req.body); // REMOVE
     const teamName: string = req.body.selectedTeam;
@@ -113,9 +113,9 @@ app.post(
 
 // --------
 
-// Filter for ONLY customer:  assemble object in the below format to return to client
+// Filter for ONLY customer (swapping out current customer selection or from blank):  assemble object in the below format to return to client
 app.post(
-  "/api/bothDropdownsBlankThenCustomerSelected",
+  "/api/onlyCustomerSelected",
   (req: Request, res: Response, next: NextFunction): Response => {
     // console.log(req.body); // REMOVE
     const customerName: string = req.body.selectedCustomer;
@@ -129,43 +129,46 @@ app.post(
 
 // --------
 
-// Filter for ONLY team after previously selected team is replaced by another selection (could be blank / ''):  assemble object in the below format to return to client
-// NOTE:  Below logic is identical to "/api/bothDropdownsBlankThenTeamSelected" endpoint
-app.post(
-  "/api/onlyTeamDisplayedThenDifferentTeamSelected",
-  (req: Request, res: Response, next: NextFunction): Response => {
-    // console.log(req.body); // REMOVE
-    const teamName: string = req.body.teamName;
-    const threeFilteredObjectsForClient: nestedFilteredObjectsForClientType =
-      TeamNewlySelectedOrReplacedAndCustomerBlank(teamName);
+// REDUNDANT LOGIC - TO REMOVE
+// // Filter for ONLY team after previously selected team is replaced by another selection (could be blank / ''):  assemble object in the below format to return to client
+// // NOTE:  Below logic is identical to "/api/onlyTeamSelected" endpoint
+// app.post(
+//   "/api/onlyTeamDisplayedThenDifferentTeamSelected",
+//   (req: Request, res: Response, next: NextFunction): Response => {
+//     // console.log(req.body); // REMOVE
+//     const teamName: string = req.body.teamName;
+//     const threeFilteredObjectsForClient: nestedFilteredObjectsForClientType =
+//       TeamNewlySelectedOrReplacedAndCustomerBlank(teamName);
 
-    return res.status(200).json(threeFilteredObjectsForClient);
-  }
-);
-
-// --------
-
-// Filter for ONLY customer after previously selected customer is replaced by another selection (could be blank / ''):  assemble object in the below format to return to client
-// NOTE:  Below logic is identical to "/api/bothDropdownsBlankThenCustomerSelected" endpoint
-app.post(
-  "/api/onlyCustomerDisplayedThenDifferentCustomerSelected",
-  (req: Request, res: Response, next: NextFunction): Response => {
-    // console.log(req.body); // REMOVE
-    const customerName: string = req.body.customerName;
-    const threeFilteredObjectsForClient: nestedFilteredObjectsForClientType =
-      CustomerNewlySelectedOrReplacedAndTeamBlank(customerName);
-
-    return res.status(200).json(threeFilteredObjectsForClient);
-  }
-);
+//     return res.status(200).json(threeFilteredObjectsForClient);
+//   }
+// );
 
 // --------
 
-// Case where customer is currently selected and team selection is NEWLY added
+// REDUNDANT LOGIC - TO REMOVE
+// // Filter for ONLY customer after previously selected customer is replaced by another selection (could be blank / ''):  assemble object in the below format to return to client
+// // NOTE:  Below logic is identical to "/api/onlyCustomerSelected" endpoint
+// app.post(
+//   "/api/onlyCustomerDisplayedThenDifferentCustomerSelected",
+//   (req: Request, res: Response, next: NextFunction): Response => {
+//     // console.log(req.body); // REMOVE
+//     const customerName: string = req.body.customerName;
+//     const threeFilteredObjectsForClient: nestedFilteredObjectsForClientType =
+//       CustomerNewlySelectedOrReplacedAndTeamBlank(customerName);
+
+//     return res.status(200).json(threeFilteredObjectsForClient);
+//   }
+// );
+
+// --------
+
+// Case #1:  Customer is currently selected and team selection is NEWLY added from blank
+// Case #2:  BOTH customer AND team are currently selected & user selects a different, non-blank team
 // Passing in:  (1) newly selected team name & (2) pre-filtered customer array of object results from front-end (persisted from previous filter -- persisting this data previously calculated upfront saves unneeded computation)
-// 2 steps:  (1) Filter for team results on a stand-alone basis and save for future and (2) using passed in customer array of object results, filter for team an assign copy of results to combinedCurrentSelectionResults object, returning all to client
+// 2 steps:  (1) Filter for team results on a stand-alone basis and save for future and (2) using passed in customer array of object results, filter for team and assign copy of results to combinedCurrentSelectionResults object, returning all to client
 app.post(
-  "/api/onlyCustomerDisplayedThenTeamSelected",
+  "/api/bothSelectedTeamJustChanged",
   (req: Request, res: Response, next: NextFunction): Response => {
     // console.log(req.body); // REMOVE
     const { selectedTeam }: { selectedTeam: string } = req.body; // destructuring
@@ -185,11 +188,12 @@ app.post(
 
 // --------
 
-// Case where team is currently selected and company selection is NEWLY added
+// Case #1:  Team is currently selected and company selection is NEWLY added from blank
+// Case #2:  BOTH customer AND team are currently selected & user selects a different, non-blank customer
 // Passing in:  (1) newly selected company name & (2) pre-filtered team array of object results from front-end (persisted from previous filter -- persisting this data previously calculated upfront saves unneeded computation)
-// 2 steps:  (1) Filter for company results on a stand-alone basis and save for future and (2) using passed in team array of object results, filter for company an assign copy of results to combinedCurrentSelectionResults object, returning all to client
+// 2 steps:  (1) Filter for company results on a stand-alone basis and save for future and (2) using passed in team array of object results, filter for company and assign copy of results to combinedCurrentSelectionResults object, returning all to client
 app.post(
-  "/api/onlyTeamDisplayedThenCustomerSelected",
+  "/api/bothSelectedCustomerJustChanged",
   (req: Request, res: Response, next: NextFunction): Response => {
     // console.log(req.body); // REMOVE
     const { selectedCustomer }: { selectedCustomer: string } = req.body; // destructuring
@@ -209,49 +213,51 @@ app.post(
 
 // --------
 
-// Case where BOTH customer AND team are selected & user selects different non-blank team
-// NOTE:  Below logic is identical to "/api/onlyCustomerDisplayedThenTeamSelected" endpoint
-app.post(
-  "/api/bothTeamAndCustomerSelectedThenDifferentTeamSelected",
-  (req: Request, res: Response, next: NextFunction): Response => {
-    // console.log(req.body); // REMOVE
-    const { selectedTeam }: { selectedTeam: string } = req.body; // destructuring
-    const {
-      customerCurrentSelectionResults,
-    }: { customerCurrentSelectionResults: augmentedRepObjectType[] } = req.body;
+// REDUNDANT LOGIC - TO REMOVE
+// // Case where BOTH customer AND team are selected & user selects different non-blank team
+// // NOTE:  Below logic is identical to "/api/bothSelectedTeamJustChanged" endpoint
+// app.post(
+//   "/api/bothTeamAndCustomerSelectedThenDifferentTeamSelected",
+//   (req: Request, res: Response, next: NextFunction): Response => {
+//     // console.log(req.body); // REMOVE
+//     const { selectedTeam }: { selectedTeam: string } = req.body; // destructuring
+//     const {
+//       customerCurrentSelectionResults,
+//     }: { customerCurrentSelectionResults: augmentedRepObjectType[] } = req.body;
 
-    const threeFilteredObjectsForClient: nestedFilteredObjectsForClientType =
-      CustomerDisplayedThenTeamSelected(
-        selectedTeam,
-        customerCurrentSelectionResults
-      );
+//     const threeFilteredObjectsForClient: nestedFilteredObjectsForClientType =
+//       CustomerDisplayedThenTeamSelected(
+//         selectedTeam,
+//         customerCurrentSelectionResults
+//       );
 
-    return res.status(200).json(threeFilteredObjectsForClient);
-  }
-);
+//     return res.status(200).json(threeFilteredObjectsForClient);
+//   }
+// );
 
 // --------
 
-// Case where BOTH customer AND team are selected & user selects different non-blank customer
-// NOTE:  Below logic is identical to "/api/onlyTeamDisplayedThenCustomerSelected" endpoint
-app.post(
-  "/api/bothTeamAndCustomerSelectedThenDifferentCustomerSelected",
-  (req: Request, res: Response, next: NextFunction): Response => {
-    // console.log(req.body); // REMOVE
-    const { selectedCustomer }: { selectedCustomer: string } = req.body; // destructuring
-    const {
-      teamCurrentSelectionResults,
-    }: { teamCurrentSelectionResults: augmentedRepObjectType[] } = req.body;
+// REDUNDANT LOGIC - TO REMOVE
+// // Case where BOTH customer AND team are selected & user selects different non-blank customer
+// // NOTE:  Below logic is identical to "/api/bothSelectedCustomerJustChanged" endpoint
+// app.post(
+//   "/api/bothTeamAndCustomerSelectedThenDifferentCustomerSelected",
+//   (req: Request, res: Response, next: NextFunction): Response => {
+//     // console.log(req.body); // REMOVE
+//     const { selectedCustomer }: { selectedCustomer: string } = req.body; // destructuring
+//     const {
+//       teamCurrentSelectionResults,
+//     }: { teamCurrentSelectionResults: augmentedRepObjectType[] } = req.body;
 
-    const threeFilteredObjectsForClient: nestedFilteredObjectsForClientType =
-      TeamDisplayedThenCustomerSelected(
-        selectedCustomer,
-        teamCurrentSelectionResults
-      );
+//     const threeFilteredObjectsForClient: nestedFilteredObjectsForClientType =
+//       TeamDisplayedThenCustomerSelected(
+//         selectedCustomer,
+//         teamCurrentSelectionResults
+//       );
 
-    return res.status(200).json(threeFilteredObjectsForClient);
-  }
-);
+//     return res.status(200).json(threeFilteredObjectsForClient);
+//   }
+// );
 
 // --------
 
