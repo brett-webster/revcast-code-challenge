@@ -2,15 +2,18 @@ import React, { useState, useEffect } from "react";
 import { Paper, Container, Text, Title, Anchor } from "@mantine/core";
 import axios, { AxiosResponse } from "axios";
 
-import type {
-  augmentedRepObjectType,
-  nestedFilteredObjectsForClientType,
-} from "../server";
+import setStateOfMultipleItemsOnInitialPageLoad from "./setStateOfMultipleItemsOnInitialPageLoad";
+import fetchPOSTrequestFromCorrectEndpoint from "./fetchPOSTrequestFromCorrectEndpoint";
 import assembleBundledRowsForDisplayHelperFxn from "./assembleBundledRowsForDisplayHelperFxn";
 import {
   TeamDropdownFilter,
   CustomerDropdownFilter,
 } from "./dropdownComponents";
+
+import type {
+  augmentedRepObjectType,
+  nestedFilteredObjectsForClientType,
+} from "../server";
 
 // ---------
 
@@ -43,56 +46,62 @@ const LandingPage = (): JSX.Element => {
 
   // #1:  On INITIAL PAGELOAD only grab 2 alphabetized dropdown lists + full DB contents of rep details for initial display
   useEffect(() => {
-    // Grab & session-persist sorted TeamList for dropdown
-    try {
-      (async function getTeamListArray(): Promise<void> {
-        const response: AxiosResponse = await axios.get(
-          "/api/getUniqueSortedTeamList"
-        );
-        const teamListArray: string[] = response.data;
-        // console.log(teamListArray); // NOTE: Prints 2x in console due to 2 renders in dev mode due to <React.StrictMode> (prints only once as intended in prod mode)
-        setTeamList(teamListArray);
-      })();
-    } catch {
-      console.error(Error);
-    }
+    setStateOfMultipleItemsOnInitialPageLoad(
+      setTeamList,
+      setCustomerList,
+      setRowResultsOfDB,
+      assembleBundledRowsForDisplayHelperFxn,
+      setRowResultsToDisplay,
+      setFullRowResultsToDisplay
+    ); // Helper fxn -- sets initial states on page load
 
-    // Grab & session-persist sorted CustomerList for dropdown
-    try {
-      (async function getCustomerListArray(): Promise<void> {
-        const response: AxiosResponse = await axios.get(
-          "/api/getUniqueSortedCustomerList"
-        );
-        const customerListArray: string[] = response.data;
-        // console.log(customerListArray); // NOTE: Prints 2x in console due to 2 renders in dev mode due to <React.StrictMode> (prints only once as intended in prod mode)
-        setCustomerList(customerListArray);
-      })();
-    } catch {
-      console.error(Error);
-    }
-
-    // Grab & session-persist full, augmented rep list for initial display
-    try {
-      (async function getEntireArrayOfObjects(): Promise<void> {
-        const response: AxiosResponse = await axios.get(
-          "/api/getEntireUniqueSortedArrayOfObjs"
-        );
-        const rowResultsOfDB: augmentedRepObjectType[] = response.data;
-        // console.log(rowResultsOfDB); // NOTE: Prints 2x in console due to 2 renders in dev mode due to <React.StrictMode> (prints only once as intended in prod mode)
-        // console.log(Object.values(rowResultsOfDB[0])); // REMOVE
-        setRowResultsOfDB(Object.values(rowResultsOfDB));
-
-        // Bundle up each 'rep row' containing 4 columns:  Name, Eamil, Team, Total Revenue
-        const bundledInitialRowsToDisplay: JSX.Element[] =
-          assembleBundledRowsForDisplayHelperFxn(rowResultsOfDB);
-
-        // console.log(bundledInitialRowsToDisplay); // REMOVE
-        setRowResultsToDisplay(bundledInitialRowsToDisplay);
-        setFullRowResultsToDisplay(bundledInitialRowsToDisplay); // Set this ONLY once so cached for future
-      })();
-    } catch {
-      console.error(Error);
-    }
+    // BELOW TO REMOVE
+    // // Grab & session-persist sorted TeamList for dropdown
+    // try {
+    //   (async function getTeamListArray(): Promise<void> {
+    //     const response: AxiosResponse = await axios.get(
+    //       "/api/getUniqueSortedTeamList"
+    //     );
+    //     const teamListArray: string[] = response.data;
+    //     // console.log(teamListArray); // NOTE: Prints 2x in console due to 2 renders in dev mode due to <React.StrictMode> (prints only once as intended in prod mode)
+    //     setTeamList(teamListArray);
+    //   })();
+    // } catch {
+    //   console.error(Error);
+    // }
+    // // Grab & session-persist sorted CustomerList for dropdown
+    // try {
+    //   (async function getCustomerListArray(): Promise<void> {
+    //     const response: AxiosResponse = await axios.get(
+    //       "/api/getUniqueSortedCustomerList"
+    //     );
+    //     const customerListArray: string[] = response.data;
+    //     // console.log(customerListArray); // NOTE: Prints 2x in console due to 2 renders in dev mode due to <React.StrictMode> (prints only once as intended in prod mode)
+    //     setCustomerList(customerListArray);
+    //   })();
+    // } catch {
+    //   console.error(Error);
+    // }
+    // // Grab & session-persist full, augmented rep list for initial display
+    // try {
+    //   (async function getEntireArrayOfObjects(): Promise<void> {
+    //     const response: AxiosResponse = await axios.get(
+    //       "/api/getEntireUniqueSortedArrayOfObjs"
+    //     );
+    //     const rowResultsOfDB: augmentedRepObjectType[] = response.data;
+    //     // console.log(rowResultsOfDB); // NOTE: Prints 2x in console due to 2 renders in dev mode due to <React.StrictMode> (prints only once as intended in prod mode)
+    //     // console.log(Object.values(rowResultsOfDB[0])); // REMOVE
+    //     setRowResultsOfDB(Object.values(rowResultsOfDB));
+    //     // Bundle up each 'rep row' containing 4 columns:  Name, Eamil, Team, Total Revenue
+    //     const bundledInitialRowsToDisplay: JSX.Element[] =
+    //       assembleBundledRowsForDisplayHelperFxn(rowResultsOfDB);
+    //     // console.log(bundledInitialRowsToDisplay); // REMOVE
+    //     setRowResultsToDisplay(bundledInitialRowsToDisplay);
+    //     setFullRowResultsToDisplay(bundledInitialRowsToDisplay); // Set this ONLY once so cached for future
+    //   })();
+    // } catch {
+    //   console.error(Error);
+    // }
   }, []); // end useEffect hook #1 (on initial load)
 
   // ---------
@@ -102,60 +111,70 @@ const LandingPage = (): JSX.Element => {
   useEffect(() => {
     // Conditionals here for all endpoints w/ async wrapper
     (async (): Promise<void> => {
-      let response: AxiosResponse | null = null;
+      // let response: AxiosResponse | null = null; // REMOVE
 
-      // Dropdowns reset to initial state (both blank/'')
-      if (selectedTeam === "" && selectedCustomer === "") {
-        response = null;
-        // setting = to cached state here, no endpoint accessed
-        setRowResultsToDisplay(fullRowResultsToDisplay);
-      }
-
-      // Only TEAM selected
-      if (selectedTeam && selectedCustomer === "") {
-        response = await axios.post("/api/onlyTeamSelected", {
+      const response: AxiosResponse | null =
+        await fetchPOSTrequestFromCorrectEndpoint(
           selectedTeam,
-        });
-      }
-
-      // Only CUSTOMER selected
-      if (selectedTeam === "" && selectedCustomer) {
-        response = await axios.post("/api/onlyCustomerSelected", {
           selectedCustomer,
-        });
-      }
+          setRowResultsToDisplay,
+          fullRowResultsToDisplay,
+          teamOrCustomerChangedFlag,
+          threeFilteredObjectsCache
+        ); // Helper fxn -- selects and pings appropriate server endpoint based on dropdown filter selections, returning processed data for display as needed (some pre-caching obviates this need in some cases)
 
-      // Both selected, TEAM is new
-      if (
-        selectedTeam &&
-        selectedCustomer &&
-        teamOrCustomerChangedFlag === "TEAM changed"
-      ) {
-        const customerCurrentSelectionResults: augmentedRepObjectType[] =
-          threeFilteredObjectsCache!.customerCurrentSelectionResults;
+      // // Dropdowns reset to initial state (both blank/'')
+      // if (selectedTeam === "" && selectedCustomer === "") {
+      //   response = null;
+      //   // setting = to cached state here, no endpoint accessed
+      //   setRowResultsToDisplay(fullRowResultsToDisplay);
+      // }
 
-        response = await axios.post("/api/bothSelectedTeamJustChanged", {
-          selectedTeam,
-          customerCurrentSelectionResults,
-        });
-      }
+      // // Only TEAM selected
+      // if (selectedTeam && selectedCustomer === "") {
+      //   response = await axios.post("/api/onlyTeamSelected", {
+      //     selectedTeam,
+      //   });
+      // }
 
-      // Both selected, CUSTOMER is new
-      if (
-        selectedTeam &&
-        selectedCustomer &&
-        teamOrCustomerChangedFlag === "CUSTOMER changed"
-      ) {
-        const teamCurrentSelectionResults: augmentedRepObjectType[] =
-          threeFilteredObjectsCache!.teamCurrentSelectionResults;
+      // // Only CUSTOMER selected
+      // if (selectedTeam === "" && selectedCustomer) {
+      //   response = await axios.post("/api/onlyCustomerSelected", {
+      //     selectedCustomer,
+      //   });
+      // }
 
-        response = await axios.post("/api/bothSelectedCustomerJustChanged", {
-          selectedCustomer,
-          teamCurrentSelectionResults,
-        });
-      }
+      // // Both selected, TEAM is new
+      // if (
+      //   selectedTeam &&
+      //   selectedCustomer &&
+      //   teamOrCustomerChangedFlag === "TEAM changed"
+      // ) {
+      //   const customerCurrentSelectionResults: augmentedRepObjectType[] =
+      //     threeFilteredObjectsCache!.customerCurrentSelectionResults;
 
-      // --- end conditionals
+      //   response = await axios.post("/api/bothSelectedTeamJustChanged", {
+      //     selectedTeam,
+      //     customerCurrentSelectionResults,
+      //   });
+      // }
+
+      // // Both selected, CUSTOMER is new
+      // if (
+      //   selectedTeam &&
+      //   selectedCustomer &&
+      //   teamOrCustomerChangedFlag === "CUSTOMER changed"
+      // ) {
+      //   const teamCurrentSelectionResults: augmentedRepObjectType[] =
+      //     threeFilteredObjectsCache!.teamCurrentSelectionResults;
+
+      //   response = await axios.post("/api/bothSelectedCustomerJustChanged", {
+      //     selectedCustomer,
+      //     teamCurrentSelectionResults,
+      //   });
+      // }
+
+      // // --- end conditionals
 
       // null response fails to trigger conditional (i.e. when both dropdowns are blank / '' selected)
       if (response) {
