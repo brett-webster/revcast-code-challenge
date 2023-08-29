@@ -11,10 +11,12 @@ import type {
 async function fetchPOSTrequestFromCorrectEndpoint(
   selectedTeam: string | null,
   selectedCustomer: string | null,
-  setRowResultsToDisplay: Dispatch<SetStateAction<JSX.Element[]>>,
-  fullRowResultsToDisplay: JSX.Element[],
+  //   setRowResultsToDisplay: Dispatch<SetStateAction<JSX.Element[]>>, -- REMOVE, NO LONGER NEEDED
+  //   fullRowResultsToDisplay: JSX.Element[], -- REMOVE, NO LONGER NEEDED
+  setRowResultsOfDB: Dispatch<SetStateAction<augmentedRepObjectType[]>>,
+  fullRowResultsOfDBinCache: augmentedRepObjectType[], // augmentedRepObjectType[]
   teamOrCustomerChangedFlag: string | null,
-  threeFilteredObjectsCache: any // nestedFilteredObjectsForClientType
+  threeFilteredObjectsCache: nestedFilteredObjectsForClientType | null // nestedFilteredObjectsForClientType
 ) {
   let response: AxiosResponse | null = null;
 
@@ -22,7 +24,8 @@ async function fetchPOSTrequestFromCorrectEndpoint(
   if (selectedTeam === "" && selectedCustomer === "") {
     response = null;
     // setting = to cached state here, no endpoint accessed
-    setRowResultsToDisplay(fullRowResultsToDisplay);
+    setRowResultsOfDB(fullRowResultsOfDBinCache);
+    // setRowResultsToDisplay(fullRowResultsToDisplay); -- REMOVE, NO LONGER NEEDED
   }
 
   // Only TEAM selected

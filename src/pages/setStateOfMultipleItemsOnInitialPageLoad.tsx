@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction } from "react";
 import axios, { AxiosResponse } from "axios";
 
-import assembleBundledRowsForDisplayHelperFxn from "./assembleBundledRowsForDisplayHelperFxn";
+// import assembleBundledRowsForDisplayHelperFxn from "./assembleBundledRowsForDisplayHelperFxn"; -- REMOVE, NO LONGER NEEDED
 
 import type {
   augmentedRepObjectType,
@@ -13,10 +13,13 @@ import type {
 function setStateOfMultipleItemsOnInitialPageLoad(
   setTeamList: Dispatch<SetStateAction<string[]>>,
   setCustomerList: Dispatch<SetStateAction<string[]>>,
-  setRowResultsOfDB: any, // Dispatch<SetStateAction<augmentedRepObjectType[]>>  <---  TO FIX ERROR (could be 'undefined'), use type assertion or similar solution:  https://bobbyhadz.com/blog/typescript-argument-type-undefined-not-assignable-parameter-type-string
-  assembleBundledRowsForDisplayHelperFxn: any, // Dispatch<SetStateAction<JSX.Element[]>>
-  setRowResultsToDisplay: Dispatch<SetStateAction<JSX.Element[]>>,
-  setFullRowResultsToDisplay: Dispatch<SetStateAction<JSX.Element[]>>
+  setRowResultsOfDB: Dispatch<SetStateAction<augmentedRepObjectType[]>>,
+  setFullRowResultsOfDBtoCache: Dispatch<
+    SetStateAction<augmentedRepObjectType[]>
+  >
+  // assembleBundledRowsForDisplayHelperFxn: any, // Dispatch<SetStateAction<JSX.Element[]>> -- REMOVE, NO LONGER NEEDED
+  // setRowResultsToDisplay: Dispatch<SetStateAction<JSX.Element[]>>,
+  // setFullRowResultsToDisplay: Dispatch<SetStateAction<JSX.Element[]>>
 ): void {
   // Grab & session-persist sorted TeamList for dropdown
   try {
@@ -25,7 +28,6 @@ function setStateOfMultipleItemsOnInitialPageLoad(
         "/api/getUniqueSortedTeamList"
       );
       const teamListArray: string[] = response.data;
-      // console.log(teamListArray); // NOTE: Prints 2x in console due to 2 renders in dev mode due to <React.StrictMode> (prints only once as intended in prod mode)
       setTeamList(teamListArray);
     })();
   } catch {
@@ -39,7 +41,6 @@ function setStateOfMultipleItemsOnInitialPageLoad(
         "/api/getUniqueSortedCustomerList"
       );
       const customerListArray: string[] = response.data;
-      // console.log(customerListArray); // NOTE: Prints 2x in console due to 2 renders in dev mode due to <React.StrictMode> (prints only once as intended in prod mode)
       setCustomerList(customerListArray);
     })();
   } catch {
@@ -52,18 +53,18 @@ function setStateOfMultipleItemsOnInitialPageLoad(
       const response: AxiosResponse = await axios.get(
         "/api/getEntireUniqueSortedArrayOfObjs"
       );
-      const rowResultsOfDB: augmentedRepObjectType[] = response.data;
-      // console.log(rowResultsOfDB); // NOTE: Prints 2x in console due to 2 renders in dev mode due to <React.StrictMode> (prints only once as intended in prod mode)
-      // console.log(Object.values(rowResultsOfDB[0])); // REMOVE
-      setRowResultsOfDB(Object.values(rowResultsOfDB));
 
-      // Bundle up each 'rep row' containing 4 columns:  Name, Eamil, Team, Total Revenue
-      const bundledInitialRowsToDisplay: JSX.Element[] =
-        assembleBundledRowsForDisplayHelperFxn(rowResultsOfDB);
+      const rowResultsOfDB: augmentedRepObjectType[] = response.data; // as augmentedRepObjectType[] ???
+      setRowResultsOfDB(rowResultsOfDB); // NOTE:  Changed from 'Object.values(rowResultsOfDB)'
+      setFullRowResultsOfDBtoCache(rowResultsOfDB); // Set this ONLY once so cached for future, need to replace setFullRowResultsToDisplay (deleted below)
 
-      // console.log(bundledInitialRowsToDisplay); // REMOVE
-      setRowResultsToDisplay(bundledInitialRowsToDisplay);
-      setFullRowResultsToDisplay(bundledInitialRowsToDisplay); // Set this ONLY once so cached for future
+      // BELOW NO LONGER NEEDED SINCE v2 USES React Component INSTEAD -- REMOVE, NO LONGER NEEDED
+      // // Bundle up each 'rep row' containing 4 columns:  Name, Email, Team, Total Revenue
+      // const bundledInitialRowsToDisplay: JSX.Element[] =
+      //   assembleBundledRowsForDisplayHelperFxn(rowResultsOfDB);
+
+      // setRowResultsToDisplay(bundledInitialRowsToDisplay);
+      // setFullRowResultsToDisplay(bundledInitialRowsToDisplay); // Set this ONLY once so cached for future
     })();
   } catch {
     console.error(Error);

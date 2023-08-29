@@ -13,8 +13,10 @@ function assembleBundledRowsForDisplayHelperFxn(
   const bundledRowsToDisplay: JSX.Element[] = rowResultsFromDB.map(
     (elementObject: augmentedRepObjectType) => {
       const keyID: number = elementObject.id;
-      const name: string =
-        elementObject.lastName + ", " + elementObject.firstName;
+      // const name: string =
+      //   elementObject.lastName + ", " + elementObject.firstName;
+      const firstName: string = elementObject.firstName; // ADDED
+      const lastName: string = elementObject.lastName; // ADDED
       const email: string = elementObject.email;
       const team: string = elementObject.teamName;
       const totalRevenue: string = `$${Math.round(
@@ -22,28 +24,36 @@ function assembleBundledRowsForDisplayHelperFxn(
       ).toLocaleString("en-US")}k`;
       const spanSpacing1: JSX.Element = (
         <span key={`span1${keyID}`}>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         </span>
       );
       const spanSpacing2: JSX.Element = (
         <span key={`span2${keyID}`}>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{" "}
         </span>
       );
       const spanSpacing3: JSX.Element = (
         <span key={`span3${keyID}`}>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{" "}
         </span>
       );
+      const spanSpacing4: JSX.Element = // ADDED
+        (
+          <span key={`span4${keyID}`}>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{" "}
+          </span>
+        );
       return (
         <li key={keyID}>
           {[
-            name,
+            firstName,
             spanSpacing1,
-            email,
+            lastName,
             spanSpacing2,
-            team,
+            email,
             spanSpacing3,
+            team,
+            spanSpacing4,
             totalRevenue,
           ]}
         </li>

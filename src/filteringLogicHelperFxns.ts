@@ -142,7 +142,7 @@ function FilterEntireDatabaseByCustomerName(
     // Use teamId from above to extract teamName from 'teams' array for each rep
     const teamName: string = teams.find(
       (team: Team) => team.id === teamId
-    )!.name;
+    )!.name; // NOTE:  non-null assertion operator (!) required here
 
     const augmentedRepObject: augmentedRepObjectType = {
       id: repID,

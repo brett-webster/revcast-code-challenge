@@ -4,7 +4,8 @@ import axios, { AxiosResponse } from "axios";
 
 import setStateOfMultipleItemsOnInitialPageLoad from "./setStateOfMultipleItemsOnInitialPageLoad";
 import fetchPOSTrequestFromCorrectEndpoint from "./fetchPOSTrequestFromCorrectEndpoint";
-import assembleBundledRowsForDisplayHelperFxn from "./assembleBundledRowsForDisplayHelperFxn";
+// import assembleBundledRowsForDisplayHelperFxn from "./assembleBundledRowsForDisplayHelperFxn"; -- TO REMOVE
+import TableComponent from "./TableComponent";
 import {
   TeamDropdownFilter,
   CustomerDropdownFilter,
@@ -23,17 +24,21 @@ const LandingPage = (): JSX.Element => {
   // On initial pageload only, the below 3 items are fetched from server and stored as cache.  1st two are persisted across entire session
   const [teamList, setTeamList] = useState<string[]>([]);
   const [customerList, setCustomerList] = useState<string[]>([]);
-  const [rowResultsOfDB, setRowResultsOfDB] =
-    useState<augmentedRepObjectType[]>();
+  const [rowResultsOfDB, setRowResultsOfDB] = useState<
+    augmentedRepObjectType[]
+  >([]);
+  const [fullRowResultsOfDBinCache, setFullRowResultsOfDBtoCache] = useState<
+    augmentedRepObjectType[]
+  >([]); // Replacing setFullRowResultsToDisplay (below to remove)
 
-  const [fullRowResultsToDisplay, setFullRowResultsToDisplay] = useState<
-    JSX.Element[]
-  >([]); // This array of JSX.Elements is computed on initial pageload and persisted across entire session as cache
-  const [rowResultsToDisplay, setRowResultsToDisplay] = useState<JSX.Element[]>(
-    []
-  ); // Array of JSX.Elements for displaying in latest results in table on each re-filter OR column sort
+  // const [fullRowResultsToDisplay, setFullRowResultsToDisplay] = useState<
+  //   JSX.Element[]
+  // >([]); // This array of JSX.Elements is computed on initial pageload and persisted across entire session as cache -- REMOVE, NO LONGER NEEDED
+  // const [rowResultsToDisplay, setRowResultsToDisplay] = useState<JSX.Element[]>(
+  //   []
+  // ); // Array of JSX.Elements for displaying in latest results in table on each re-filter OR column sort -- REMOVE, NO LONGER NEEDED
   const [threeFilteredObjectsCache, setThreeFilteredObjectsCache] =
-    useState<nestedFilteredObjectsForClientType>(); // Caching returned filters to re-use & spare repeat computations on backend
+    useState<nestedFilteredObjectsForClientType | null>(null); // Caching returned filters to re-use & spare repeat computations on backend
 
   // Below are used to (re)set team and customer choices using dropdown filters & track which most recent changed
   const [selectedTeam, setSelectedTeam] = useState<string | null>("");
@@ -50,58 +55,11 @@ const LandingPage = (): JSX.Element => {
       setTeamList,
       setCustomerList,
       setRowResultsOfDB,
-      assembleBundledRowsForDisplayHelperFxn,
-      setRowResultsToDisplay,
-      setFullRowResultsToDisplay
+      setFullRowResultsOfDBtoCache
+      // assembleBundledRowsForDisplayHelperFxn, -- REMOVE, NO LONGER NEEDED
+      // setRowResultsToDisplay,
+      // setFullRowResultsToDisplay
     ); // Helper fxn -- sets initial states on page load
-
-    // BELOW TO REMOVE
-    // // Grab & session-persist sorted TeamList for dropdown
-    // try {
-    //   (async function getTeamListArray(): Promise<void> {
-    //     const response: AxiosResponse = await axios.get(
-    //       "/api/getUniqueSortedTeamList"
-    //     );
-    //     const teamListArray: string[] = response.data;
-    //     // console.log(teamListArray); // NOTE: Prints 2x in console due to 2 renders in dev mode due to <React.StrictMode> (prints only once as intended in prod mode)
-    //     setTeamList(teamListArray);
-    //   })();
-    // } catch {
-    //   console.error(Error);
-    // }
-    // // Grab & session-persist sorted CustomerList for dropdown
-    // try {
-    //   (async function getCustomerListArray(): Promise<void> {
-    //     const response: AxiosResponse = await axios.get(
-    //       "/api/getUniqueSortedCustomerList"
-    //     );
-    //     const customerListArray: string[] = response.data;
-    //     // console.log(customerListArray); // NOTE: Prints 2x in console due to 2 renders in dev mode due to <React.StrictMode> (prints only once as intended in prod mode)
-    //     setCustomerList(customerListArray);
-    //   })();
-    // } catch {
-    //   console.error(Error);
-    // }
-    // // Grab & session-persist full, augmented rep list for initial display
-    // try {
-    //   (async function getEntireArrayOfObjects(): Promise<void> {
-    //     const response: AxiosResponse = await axios.get(
-    //       "/api/getEntireUniqueSortedArrayOfObjs"
-    //     );
-    //     const rowResultsOfDB: augmentedRepObjectType[] = response.data;
-    //     // console.log(rowResultsOfDB); // NOTE: Prints 2x in console due to 2 renders in dev mode due to <React.StrictMode> (prints only once as intended in prod mode)
-    //     // console.log(Object.values(rowResultsOfDB[0])); // REMOVE
-    //     setRowResultsOfDB(Object.values(rowResultsOfDB));
-    //     // Bundle up each 'rep row' containing 4 columns:  Name, Eamil, Team, Total Revenue
-    //     const bundledInitialRowsToDisplay: JSX.Element[] =
-    //       assembleBundledRowsForDisplayHelperFxn(rowResultsOfDB);
-    //     // console.log(bundledInitialRowsToDisplay); // REMOVE
-    //     setRowResultsToDisplay(bundledInitialRowsToDisplay);
-    //     setFullRowResultsToDisplay(bundledInitialRowsToDisplay); // Set this ONLY once so cached for future
-    //   })();
-    // } catch {
-    //   console.error(Error);
-    // }
   }, []); // end useEffect hook #1 (on initial load)
 
   // ---------
@@ -111,76 +69,25 @@ const LandingPage = (): JSX.Element => {
   useEffect(() => {
     // Conditionals here for all endpoints w/ async wrapper
     (async (): Promise<void> => {
-      // let response: AxiosResponse | null = null; // REMOVE
-
       const response: AxiosResponse | null =
         await fetchPOSTrequestFromCorrectEndpoint(
           selectedTeam,
           selectedCustomer,
-          setRowResultsToDisplay,
-          fullRowResultsToDisplay,
+          // setRowResultsToDisplay, -- REMOVE, NO LONGER NEEDED
+          // fullRowResultsToDisplay,
+          setRowResultsOfDB,
+          fullRowResultsOfDBinCache,
           teamOrCustomerChangedFlag,
           threeFilteredObjectsCache
         ); // Helper fxn -- selects and pings appropriate server endpoint based on dropdown filter selections, returning processed data for display as needed (some pre-caching obviates this need in some cases)
-
-      // // Dropdowns reset to initial state (both blank/'')
-      // if (selectedTeam === "" && selectedCustomer === "") {
-      //   response = null;
-      //   // setting = to cached state here, no endpoint accessed
-      //   setRowResultsToDisplay(fullRowResultsToDisplay);
-      // }
-
-      // // Only TEAM selected
-      // if (selectedTeam && selectedCustomer === "") {
-      //   response = await axios.post("/api/onlyTeamSelected", {
-      //     selectedTeam,
-      //   });
-      // }
-
-      // // Only CUSTOMER selected
-      // if (selectedTeam === "" && selectedCustomer) {
-      //   response = await axios.post("/api/onlyCustomerSelected", {
-      //     selectedCustomer,
-      //   });
-      // }
-
-      // // Both selected, TEAM is new
-      // if (
-      //   selectedTeam &&
-      //   selectedCustomer &&
-      //   teamOrCustomerChangedFlag === "TEAM changed"
-      // ) {
-      //   const customerCurrentSelectionResults: augmentedRepObjectType[] =
-      //     threeFilteredObjectsCache!.customerCurrentSelectionResults;
-
-      //   response = await axios.post("/api/bothSelectedTeamJustChanged", {
-      //     selectedTeam,
-      //     customerCurrentSelectionResults,
-      //   });
-      // }
-
-      // // Both selected, CUSTOMER is new
-      // if (
-      //   selectedTeam &&
-      //   selectedCustomer &&
-      //   teamOrCustomerChangedFlag === "CUSTOMER changed"
-      // ) {
-      //   const teamCurrentSelectionResults: augmentedRepObjectType[] =
-      //     threeFilteredObjectsCache!.teamCurrentSelectionResults;
-
-      //   response = await axios.post("/api/bothSelectedCustomerJustChanged", {
-      //     selectedCustomer,
-      //     teamCurrentSelectionResults,
-      //   });
-      // }
-
-      // // --- end conditionals
 
       // null response fails to trigger conditional (i.e. when both dropdowns are blank / '' selected)
       if (response) {
         const threeFilteredObjects: nestedFilteredObjectsForClientType =
           response.data;
 
+        // const combinedCurrentSelectionResults: augmentedRepObjectType[] =
+        //   threeFilteredObjects.combinedCurrentSelectionResults as augmentedRepObjectType[]; // -- REMOVE, NO LONGER NEEDED
         setRowResultsOfDB(threeFilteredObjects.combinedCurrentSelectionResults); // A change here in rowResultsOfDB triggers the below useEffect to run
         setThreeFilteredObjectsCache(threeFilteredObjects);
       }
@@ -189,21 +96,23 @@ const LandingPage = (): JSX.Element => {
 
   // ---------
 
-  // #3:  Onchange of rowResultsOfDB assemble array of JSX.Elements for painting
-  useEffect(() => {
-    if (rowResultsOfDB) {
-      // Bundle up latest result and reset state -- each 'rep row' contains 4 columns:  Name, Eamil, Team, Total Revenue
-      const bundledRowsToDisplay: JSX.Element[] =
-        assembleBundledRowsForDisplayHelperFxn(rowResultsOfDB);
+  // REMOVE, NO LONGER NEEDED
+  // // #3:  Onchange of rowResultsOfDB, assemble array of JSX.Elements for painting
+  // useEffect(() => {
+  //   if (rowResultsOfDB) {
+  //     // Bundle up latest result and reset state -- each 'rep row' contains 4 columns:  Name, Eamil, Team, Total Revenue
+  //     const bundledRowsToDisplay: JSX.Element[] =
+  //       assembleBundledRowsForDisplayHelperFxn(rowResultsOfDB);
 
-      setRowResultsToDisplay(bundledRowsToDisplay);
-    }
-  }, [rowResultsOfDB]); // end useEffect hook #3 (onChange of rowResultsOfDB)
+  //     setRowResultsToDisplay(bundledRowsToDisplay);
+  //   }
+  // }, [rowResultsOfDB]); // end useEffect hook #3 (onChange of rowResultsOfDB)
 
   // --------- Returning LandingPage component ----------
 
   return (
-    <Paper shadow="md" p="xl">
+    <>
+      {/* <Paper shadow="md" p="xl">
       <Container size="md">
         <Title order={1}>Good luck!</Title>
         &nbsp;
@@ -223,26 +132,28 @@ const LandingPage = (): JSX.Element => {
         &nbsp;
         <Text>Add the following filters: Team Name, Opp Customer</Text>
         <br></br>
-        <br></br>
-        <div style={{ display: "flex", justifyContent: "none" }}>
-          <TeamDropdownFilter
-            teamList={teamList}
-            setSelectedTeam={setSelectedTeam}
-            setTeamOrCustomerChangedFlag={setTeamOrCustomerChangedFlag}
-            selectedTeam={selectedTeam}
-          />
-          <CustomerDropdownFilter
-            customerList={customerList}
-            setSelectedCustomer={setSelectedCustomer}
-            setTeamOrCustomerChangedFlag={setTeamOrCustomerChangedFlag}
-            selectedCustomer={selectedCustomer}
-          />
-        </div>
-        <br></br>
-        <br></br>
-        <ol>{rowResultsToDisplay}</ol>
-      </Container>
-    </Paper>
+        <br></br> */}
+      <div style={{ display: "flex", justifyContent: "none" }}>
+        <TeamDropdownFilter
+          teamList={teamList}
+          setSelectedTeam={setSelectedTeam}
+          setTeamOrCustomerChangedFlag={setTeamOrCustomerChangedFlag}
+          selectedTeam={selectedTeam}
+        />
+        <CustomerDropdownFilter
+          customerList={customerList}
+          setSelectedCustomer={setSelectedCustomer}
+          setTeamOrCustomerChangedFlag={setTeamOrCustomerChangedFlag}
+          selectedCustomer={selectedCustomer}
+        />
+      </div>
+      <br></br>
+      <br></br>
+      {/* <ol>{rowResultsToDisplay}</ol> */}
+      <TableComponent dataRows={rowResultsOfDB} />
+      {/* </Container>
+    </Paper> */}
+    </>
   );
 };
 
