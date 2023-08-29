@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Paper, Container, Text, Title, Anchor } from "@mantine/core";
+// import { Paper, Container, Text, Title, Anchor } from "@mantine/core";
 import axios, { AxiosResponse } from "axios";
 
 import setStateOfMultipleItemsOnInitialPageLoad from "./setStateOfMultipleItemsOnInitialPageLoad";
 import fetchPOSTrequestFromCorrectEndpoint from "./fetchPOSTrequestFromCorrectEndpoint";
-// import assembleBundledRowsForDisplayHelperFxn from "./assembleBundledRowsForDisplayHelperFxn"; -- TO REMOVE
 import TableComponent from "./TableComponent";
 import {
   TeamDropdownFilter,
@@ -29,14 +28,8 @@ const LandingPage = (): JSX.Element => {
   >([]);
   const [fullRowResultsOfDBinCache, setFullRowResultsOfDBtoCache] = useState<
     augmentedRepObjectType[]
-  >([]); // Replacing setFullRowResultsToDisplay (below to remove)
+  >([]);
 
-  // const [fullRowResultsToDisplay, setFullRowResultsToDisplay] = useState<
-  //   JSX.Element[]
-  // >([]); // This array of JSX.Elements is computed on initial pageload and persisted across entire session as cache -- REMOVE, NO LONGER NEEDED
-  // const [rowResultsToDisplay, setRowResultsToDisplay] = useState<JSX.Element[]>(
-  //   []
-  // ); // Array of JSX.Elements for displaying in latest results in table on each re-filter OR column sort -- REMOVE, NO LONGER NEEDED
   const [threeFilteredObjectsCache, setThreeFilteredObjectsCache] =
     useState<nestedFilteredObjectsForClientType | null>(null); // Caching returned filters to re-use & spare repeat computations on backend
 
@@ -56,9 +49,6 @@ const LandingPage = (): JSX.Element => {
       setCustomerList,
       setRowResultsOfDB,
       setFullRowResultsOfDBtoCache
-      // assembleBundledRowsForDisplayHelperFxn, -- REMOVE, NO LONGER NEEDED
-      // setRowResultsToDisplay,
-      // setFullRowResultsToDisplay
     ); // Helper fxn -- sets initial states on page load
   }, []); // end useEffect hook #1 (on initial load)
 
@@ -73,8 +63,6 @@ const LandingPage = (): JSX.Element => {
         await fetchPOSTrequestFromCorrectEndpoint(
           selectedTeam,
           selectedCustomer,
-          // setRowResultsToDisplay, -- REMOVE, NO LONGER NEEDED
-          // fullRowResultsToDisplay,
           setRowResultsOfDB,
           fullRowResultsOfDBinCache,
           teamOrCustomerChangedFlag,
@@ -86,53 +74,16 @@ const LandingPage = (): JSX.Element => {
         const threeFilteredObjects: nestedFilteredObjectsForClientType =
           response.data;
 
-        // const combinedCurrentSelectionResults: augmentedRepObjectType[] =
-        //   threeFilteredObjects.combinedCurrentSelectionResults as augmentedRepObjectType[]; // -- REMOVE, NO LONGER NEEDED
-        setRowResultsOfDB(threeFilteredObjects.combinedCurrentSelectionResults); // A change here in rowResultsOfDB triggers the below useEffect to run
+        setRowResultsOfDB(threeFilteredObjects.combinedCurrentSelectionResults);
         setThreeFilteredObjectsCache(threeFilteredObjects);
       }
     })();
   }, [selectedTeam, selectedCustomer]); // end useEffect hook #2 (onChange of team or customer)
 
-  // ---------
-
-  // REMOVE, NO LONGER NEEDED
-  // // #3:  Onchange of rowResultsOfDB, assemble array of JSX.Elements for painting
-  // useEffect(() => {
-  //   if (rowResultsOfDB) {
-  //     // Bundle up latest result and reset state -- each 'rep row' contains 4 columns:  Name, Eamil, Team, Total Revenue
-  //     const bundledRowsToDisplay: JSX.Element[] =
-  //       assembleBundledRowsForDisplayHelperFxn(rowResultsOfDB);
-
-  //     setRowResultsToDisplay(bundledRowsToDisplay);
-  //   }
-  // }, [rowResultsOfDB]); // end useEffect hook #3 (onChange of rowResultsOfDB)
-
   // --------- Returning LandingPage component ----------
 
   return (
     <>
-      {/* <Paper shadow="md" p="xl">
-      <Container size="md">
-        <Title order={1}>Good luck!</Title>
-        &nbsp;
-        <Text>Please refer to README.md or reach out with any questions</Text>
-        &nbsp;
-        <Text>
-          It is optional to use Mantine Components&nbsp;&nbsp;
-          <Anchor href="https://mantine.dev/" target="_blank">
-            Mantine docs
-          </Anchor>
-        </Text>
-        &nbsp;
-        <Text>
-          Create a table of reps that includes the following columns: First
-          Name, Last Name, Email, Team, Total Revenue
-        </Text>
-        &nbsp;
-        <Text>Add the following filters: Team Name, Opp Customer</Text>
-        <br></br>
-        <br></br> */}
       <div style={{ display: "flex", justifyContent: "none" }}>
         <TeamDropdownFilter
           teamList={teamList}
@@ -149,10 +100,7 @@ const LandingPage = (): JSX.Element => {
       </div>
       <br></br>
       <br></br>
-      {/* <ol>{rowResultsToDisplay}</ol> */}
       <TableComponent dataRows={rowResultsOfDB} />
-      {/* </Container>
-    </Paper> */}
     </>
   );
 };

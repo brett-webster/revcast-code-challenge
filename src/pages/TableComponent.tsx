@@ -14,11 +14,11 @@ type columnHeaderPropsType = {
 
 type tableContentPropsType = {
   columnHeadersMatchingSchema: string[];
-  dataRows: augmentedRepObjectType[]; // augmentedRepObjectType[]
+  dataRows: augmentedRepObjectType[];
 };
 
 type tableComponentPropsType = {
-  dataRows: augmentedRepObjectType[]; // augmentedRepObjectType[] ** OLD ERROR STARTS HERE **
+  dataRows: augmentedRepObjectType[];
 };
 
 // https://stackoverflow.com/questions/56568423/typescript-no-index-signature-with-a-parameter-of-type-string-was-found-on-ty
@@ -59,7 +59,7 @@ const TableContent = ({
   columnHeadersMatchingSchema,
   dataRows,
 }: tableContentPropsType): JSX.Element => {
-  const bundledTable: JSX.Element[] = dataRows?.map(
+  const bundledTable: JSX.Element[] = dataRows.map(
     (dataRow: augmentedRepObjectType) => (
       <tr key={`${dataRow.id}DATA`}>
         {columnHeadersMatchingSchema.map((columnSchemaName: string) => (

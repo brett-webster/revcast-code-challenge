@@ -1,8 +1,6 @@
 import { Dispatch, SetStateAction } from "react";
 import axios, { AxiosResponse } from "axios";
 
-// import assembleBundledRowsForDisplayHelperFxn from "./assembleBundledRowsForDisplayHelperFxn"; -- REMOVE, NO LONGER NEEDED
-
 import type {
   augmentedRepObjectType,
   nestedFilteredObjectsForClientType,
@@ -17,9 +15,6 @@ function setStateOfMultipleItemsOnInitialPageLoad(
   setFullRowResultsOfDBtoCache: Dispatch<
     SetStateAction<augmentedRepObjectType[]>
   >
-  // assembleBundledRowsForDisplayHelperFxn: any, // Dispatch<SetStateAction<JSX.Element[]>> -- REMOVE, NO LONGER NEEDED
-  // setRowResultsToDisplay: Dispatch<SetStateAction<JSX.Element[]>>,
-  // setFullRowResultsToDisplay: Dispatch<SetStateAction<JSX.Element[]>>
 ): void {
   // Grab & session-persist sorted TeamList for dropdown
   try {
@@ -54,17 +49,9 @@ function setStateOfMultipleItemsOnInitialPageLoad(
         "/api/getEntireUniqueSortedArrayOfObjs"
       );
 
-      const rowResultsOfDB: augmentedRepObjectType[] = response.data; // as augmentedRepObjectType[] ???
-      setRowResultsOfDB(rowResultsOfDB); // NOTE:  Changed from 'Object.values(rowResultsOfDB)'
-      setFullRowResultsOfDBtoCache(rowResultsOfDB); // Set this ONLY once so cached for future, need to replace setFullRowResultsToDisplay (deleted below)
-
-      // BELOW NO LONGER NEEDED SINCE v2 USES React Component INSTEAD -- REMOVE, NO LONGER NEEDED
-      // // Bundle up each 'rep row' containing 4 columns:  Name, Email, Team, Total Revenue
-      // const bundledInitialRowsToDisplay: JSX.Element[] =
-      //   assembleBundledRowsForDisplayHelperFxn(rowResultsOfDB);
-
-      // setRowResultsToDisplay(bundledInitialRowsToDisplay);
-      // setFullRowResultsToDisplay(bundledInitialRowsToDisplay); // Set this ONLY once so cached for future
+      const rowResultsOfDB: augmentedRepObjectType[] = response.data;
+      setRowResultsOfDB(rowResultsOfDB);
+      setFullRowResultsOfDBtoCache(rowResultsOfDB); // Set this ONLY once so cached for future
     })();
   } catch {
     console.error(Error);
