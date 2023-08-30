@@ -23,7 +23,7 @@ type tableComponentPropsType = {
 
 // https://stackoverflow.com/questions/56568423/typescript-no-index-signature-with-a-parameter-of-type-string-was-found-on-ty
 // NOTE:  Used to solve an object indexing error.  Solution search for "export interface IItem extends Record<string, any> {" ...
-export interface dataRowModifiedType extends Record<string, any> {
+interface dataRowModifiedType extends Record<string, any> {
   id: number;
   firstName: string;
   lastName: string;
@@ -47,7 +47,7 @@ const ColumnHeader = ({
   );
 
   return (
-    <thead>
+    <thead style={{ fontWeight: 600, backgroundColor: "#34d399" }}>
       <tr>{columnHeaderNamesBundle}</tr>
     </thead>
   );
@@ -60,11 +60,24 @@ const TableContent = ({
   dataRows,
 }: tableContentPropsType): JSX.Element => {
   const bundledTable: JSX.Element[] = dataRows.map(
-    (dataRow: augmentedRepObjectType) => (
-      <tr key={`${dataRow.id}DATA`}>
+    (dataRow: augmentedRepObjectType, indexPostFilter: number) => (
+      <tr
+        style={
+          indexPostFilter % 2 === 0
+            ? { backgroundColor: "rgb(240, 240, 240)" }
+            : { backgroundColor: "ddddd" }
+        }
+        key={`${indexPostFilter}DATA`}
+      >
         {columnHeadersMatchingSchema.map((columnSchemaName: string) => (
           <td className="reps-table-cell" key={`${columnSchemaName}SCHEMA`}>
-            {(dataRow as dataRowModifiedType)[columnSchemaName]}
+            {columnSchemaName === "totalRevenue"
+              ? "$" +
+                Math.round(
+                  (dataRow as dataRowModifiedType)[columnSchemaName] / 1000
+                ).toLocaleString("en-US") +
+                "k"
+              : (dataRow as dataRowModifiedType)[columnSchemaName]}
           </td>
         ))}
       </tr>
@@ -97,7 +110,29 @@ const TableComponent = ({ dataRows }: tableComponentPropsType): JSX.Element => {
 
   return (
     <>
-      TITLE HERE!!
+      <title>Surfing the Pipeline with Revcast</title>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          marginLeft: "20%",
+          marginRight: "20%",
+          marginTop: "3%",
+        }}
+      >
+        <div
+          style={{
+            fontFamily: "verdana",
+            fontSize: "28px",
+            fontWeight: "600",
+            display: "flex",
+          }}
+        >
+          Surfing the Pipeline with Revcast&nbsp;&nbsp;&nbsp;
+        </div>
+      </div>
+
       <table className="reps-table">
         <ColumnHeader columnHeaderNames={columnHeaderNames} />
         <TableContent
