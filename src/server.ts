@@ -21,6 +21,9 @@ import {
   CustomerDisplayedThenTeamSelected,
 } from "./filteringLogicHelperFxns";
 
+// Importing helper fxn containing re-sorting logic
+import { SortByColumnHeaderAscOrDesc } from "./sortingLogicHelperFxn";
+
 const app: Application = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -28,15 +31,20 @@ app.use(express.urlencoded({ extended: true }));
 // --------
 
 // Extend properties of user-defined Representative type (imported above) for object that will be returned back to client for display
-interface augmentedRepObjectType extends Representative {
+export interface augmentedRepObjectType extends Representative {
   teamName: string;
   totalRevenue: number;
 }
 
-type nestedFilteredObjectsForClientType = {
+export type nestedFilteredObjectsForClientType = {
   teamCurrentSelectionResults: augmentedRepObjectType[];
   customerCurrentSelectionResults: augmentedRepObjectType[];
   combinedCurrentSelectionResults: augmentedRepObjectType[];
+};
+
+export type sortedStateType = {
+  columnHeadToSort: string;
+  order: string;
 };
 
 // --------
@@ -97,16 +105,52 @@ app.get(
 
 // --------
 
+// ADDED
 // Filter for ONLY team (swapping out current team selection or from blank):  assemble object in the below format to return to client
 // Format:  {firstName, lastName, email, teamName, totalRevenue, teamId, id}
+app.post(
+  "/api/allSelectedButNeedsReSorted",
+  (req: Request, res: Response, next: NextFunction): Response => {
+    // const columnHeadToSort: string = req.body.sortedState.columnHeadToSort; // REMOVE
+    // const order: string = req.body.sortedState.order; // REMOVE
+    // console.log(columnHeadToSort, order); // REMOVE
+    const sortedState: sortedStateType = req.body.sortedState;
+
+    const fullResultsOfDB: augmentedRepObjectType[] =
+      GetEntireUniqueSortedArrayOfObjs(); // Helper fxn
+    console.log(fullResultsOfDB);
+
+    const threeFilteredObjectsForClient: nestedFilteredObjectsForClientType = {
+      teamCurrentSelectionResults: [],
+      customerCurrentSelectionResults: [],
+      combinedCurrentSelectionResults: fullResultsOfDB,
+    };
+
+    // NEW
+    const reSortedThreeFilteredObjectsForClient: nestedFilteredObjectsForClientType =
+      SortByColumnHeaderAscOrDesc(sortedState, threeFilteredObjectsForClient);
+
+    return res.status(200).json(reSortedThreeFilteredObjectsForClient);
+  }
+);
+
+// --------
+
+// Filter for ONLY team (swapping out current team selection or from blank):  assemble object in the below format to return to client
 app.post(
   "/api/onlyTeamSelected",
   (req: Request, res: Response, next: NextFunction): Response => {
     const teamName: string = req.body.selectedTeam;
+    const sortedState: sortedStateType = req.body.sortedState;
+
     const threeFilteredObjectsForClient: nestedFilteredObjectsForClientType =
       TeamNewlySelectedOrReplacedAndCustomerBlank(teamName);
 
-    return res.status(200).json(threeFilteredObjectsForClient);
+    // NEW, ADDED TO ALL ENDPOINTS
+    const reSortedThreeFilteredObjectsForClient: nestedFilteredObjectsForClientType =
+      SortByColumnHeaderAscOrDesc(sortedState, threeFilteredObjectsForClient);
+
+    return res.status(200).json(reSortedThreeFilteredObjectsForClient);
   }
 );
 
@@ -117,10 +161,15 @@ app.post(
   "/api/onlyCustomerSelected",
   (req: Request, res: Response, next: NextFunction): Response => {
     const customerName: string = req.body.selectedCustomer;
+    const sortedState: sortedStateType = req.body.sortedState;
+
     const threeFilteredObjectsForClient: nestedFilteredObjectsForClientType =
       CustomerNewlySelectedOrReplacedAndTeamBlank(customerName);
 
-    return res.status(200).json(threeFilteredObjectsForClient);
+    const reSortedThreeFilteredObjectsForClient: nestedFilteredObjectsForClientType =
+      SortByColumnHeaderAscOrDesc(sortedState, threeFilteredObjectsForClient);
+
+    return res.status(200).json(reSortedThreeFilteredObjectsForClient);
   }
 );
 
@@ -137,6 +186,7 @@ app.post(
     const {
       customerCurrentSelectionResults,
     }: { customerCurrentSelectionResults: augmentedRepObjectType[] } = req.body;
+    const sortedState: sortedStateType = req.body.sortedState;
 
     const threeFilteredObjectsForClient: nestedFilteredObjectsForClientType =
       CustomerDisplayedThenTeamSelected(
@@ -144,7 +194,10 @@ app.post(
         customerCurrentSelectionResults
       );
 
-    return res.status(200).json(threeFilteredObjectsForClient);
+    const reSortedThreeFilteredObjectsForClient: nestedFilteredObjectsForClientType =
+      SortByColumnHeaderAscOrDesc(sortedState, threeFilteredObjectsForClient);
+
+    return res.status(200).json(reSortedThreeFilteredObjectsForClient);
   }
 );
 
@@ -161,6 +214,7 @@ app.post(
     const {
       teamCurrentSelectionResults,
     }: { teamCurrentSelectionResults: augmentedRepObjectType[] } = req.body;
+    const sortedState: sortedStateType = req.body.sortedState;
 
     const threeFilteredObjectsForClient: nestedFilteredObjectsForClientType =
       TeamDisplayedThenCustomerSelected(
@@ -168,7 +222,32 @@ app.post(
         teamCurrentSelectionResults
       );
 
-    return res.status(200).json(threeFilteredObjectsForClient);
+    const reSortedThreeFilteredObjectsForClient: nestedFilteredObjectsForClientType =
+      SortByColumnHeaderAscOrDesc(sortedState, threeFilteredObjectsForClient);
+
+    return res.status(200).json(reSortedThreeFilteredObjectsForClient);
+  }
+);
+
+// --------
+
+// ONLY endpoint relating to re-sorting by column head (ascending/descending)
+app.post(
+  "/api/reSortTable",
+  (req: Request, res: Response, next: NextFunction): Response => {
+    const { sortedState }: { sortedState: sortedStateType } = req.body; // destructuring
+    const {
+      threeFilteredObjectsCache,
+    }: { threeFilteredObjectsCache: nestedFilteredObjectsForClientType } =
+      req.body; // destructuring
+
+    // console.log(sortedState); // REMOVE
+    // console.log(threeFilteredObjectsCache); // REMOVE
+
+    const reSortedThreeFilteredObjectsCache: nestedFilteredObjectsForClientType =
+      SortByColumnHeaderAscOrDesc(sortedState, threeFilteredObjectsCache);
+
+    return res.status(200).json(threeFilteredObjectsCache);
   }
 );
 
@@ -214,5 +293,3 @@ app.use(
 app.listen(4000);
 
 // --------
-
-export type { augmentedRepObjectType, nestedFilteredObjectsForClientType };

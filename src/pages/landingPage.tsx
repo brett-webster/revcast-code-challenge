@@ -14,6 +14,7 @@ import type {
   augmentedRepObjectType,
   nestedFilteredObjectsForClientType,
 } from "../server";
+import type { sortedStateType } from "./TableComponent";
 
 // ---------
 
@@ -28,7 +29,7 @@ const LandingPage = (): JSX.Element => {
   >([]);
   const [fullRowResultsOfDBinCache, setFullRowResultsOfDBtoCache] = useState<
     augmentedRepObjectType[]
-  >([]);
+  >([]); // entirety of table is cached for future reference
 
   const [threeFilteredObjectsCache, setThreeFilteredObjectsCache] =
     useState<nestedFilteredObjectsForClientType | null>(null); // Caching returned filters to re-use & spare repeat computations on backend
@@ -40,6 +41,11 @@ const LandingPage = (): JSX.Element => {
     string | null
   >("");
 
+  const [sortedState, setSortedState] = useState<sortedStateType>({
+    columnHeadToSort: "id",
+    order: "Ascending",
+  });
+
   // --------- useEffect hooks triggered under various scenarios --------
 
   // #1:  On INITIAL PAGELOAD only grab 2 alphabetized dropdown lists + full DB contents of rep details for initial display
@@ -48,7 +54,8 @@ const LandingPage = (): JSX.Element => {
       setTeamList,
       setCustomerList,
       setRowResultsOfDB,
-      setFullRowResultsOfDBtoCache
+      setFullRowResultsOfDBtoCache,
+      setThreeFilteredObjectsCache
     ); // Helper fxn -- sets initial states on page load
   }, []); // end useEffect hook #1 (on initial load)
 
@@ -66,7 +73,8 @@ const LandingPage = (): JSX.Element => {
           setRowResultsOfDB,
           fullRowResultsOfDBinCache,
           teamOrCustomerChangedFlag,
-          threeFilteredObjectsCache
+          threeFilteredObjectsCache,
+          sortedState
         ); // Helper fxn -- selects and pings appropriate server endpoint based on dropdown filter selections, returning processed data for display as needed (some pre-caching obviates this need in some cases)
 
       // null response fails to trigger conditional (i.e. when both dropdowns are blank / '' selected)
@@ -79,6 +87,34 @@ const LandingPage = (): JSX.Element => {
       }
     })();
   }, [selectedTeam, selectedCustomer]); // end useEffect hook #2 (onChange of team or customer)
+
+  // ---------
+
+  // #3:  Below hook is triggered upon ANY state change in sorting by column
+  // Selection is routed to the back end for re-sorting and returning the updated bundle for re-setting state & display
+  useEffect(() => {
+    (async (): Promise<void> => {
+      const response: AxiosResponse | null = await axios.post(
+        "/api/reSortTable",
+        {
+          sortedState,
+          threeFilteredObjectsCache,
+        }
+      );
+
+      // null response fails to trigger conditional (similar code to above)
+      if (response?.data) {
+        const reSortedThreeFilteredObjects: nestedFilteredObjectsForClientType =
+          response.data;
+        // console.log("FE: ", response.data); // REMOVE
+
+        setRowResultsOfDB(
+          reSortedThreeFilteredObjects.combinedCurrentSelectionResults
+        );
+        setThreeFilteredObjectsCache(reSortedThreeFilteredObjects);
+      }
+    })();
+  }, [sortedState]); // end useEffect hook #3 (onChange of sorting by column header)
 
   // --------- Returning LandingPage component ----------
 
@@ -100,7 +136,11 @@ const LandingPage = (): JSX.Element => {
       </div>
       <br></br>
       <br></br>
-      <TableComponent dataRows={rowResultsOfDB} />
+      <TableComponent
+        dataRows={rowResultsOfDB}
+        sortedState={sortedState}
+        setSortedState={setSortedState}
+      />
     </>
   );
 };

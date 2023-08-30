@@ -31,3 +31,9 @@ code {
   text-align: left;
   padding: 6px;
 }
+
+/* :hover in CSS not working for some reason so using in-line JSX... */
+#reps-table-header:hover {
+  background-color: #2dbe89;
+  cursor: pointer;
+}

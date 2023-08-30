@@ -14,6 +14,9 @@ function setStateOfMultipleItemsOnInitialPageLoad(
   setRowResultsOfDB: Dispatch<SetStateAction<augmentedRepObjectType[]>>,
   setFullRowResultsOfDBtoCache: Dispatch<
     SetStateAction<augmentedRepObjectType[]>
+  >,
+  setThreeFilteredObjectsCache: Dispatch<
+    SetStateAction<nestedFilteredObjectsForClientType | null>
   >
 ): void {
   // Grab & session-persist sorted TeamList for dropdown
@@ -52,6 +55,11 @@ function setStateOfMultipleItemsOnInitialPageLoad(
       const rowResultsOfDB: augmentedRepObjectType[] = response.data;
       setRowResultsOfDB(rowResultsOfDB);
       setFullRowResultsOfDBtoCache(rowResultsOfDB); // Set this ONLY once so cached for future
+      setThreeFilteredObjectsCache({
+        teamCurrentSelectionResults: [],
+        customerCurrentSelectionResults: [],
+        combinedCurrentSelectionResults: rowResultsOfDB,
+      });
     })();
   } catch {
     console.error(Error);
