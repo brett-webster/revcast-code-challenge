@@ -24,7 +24,6 @@ async function fetchPOSTrequestFromCorrectEndpoint(
     columnHeadToSort,
     order,
   }: { columnHeadToSort: string; order: string } = sortedState; // destructuring in-line
-  console.log("FE: ", columnHeadToSort, order); // REMOVE
 
   // Dropdowns reset to initial state (both blank/'') & sorted by id, ascending
   if (
@@ -33,21 +32,18 @@ async function fetchPOSTrequestFromCorrectEndpoint(
     columnHeadToSort === "id" &&
     order === "Ascending"
   ) {
-    console.log("FE:  INSIDE STATIC..."); // REMOVE
     response = null;
     // setting = to cached state here, no endpoint accessed
     setRowResultsOfDB(fullRowResultsOfDBinCache);
   }
 
   // ADDED
-  // Dropdowns reset to initial state (both blank/'') BUT still need to ping back end if NOT sorted by id, ascending
+  // Dropdowns reset to initial state (both blank/'') BUT still need to ping back end if sorting is anything OTHER THAN by id, ascending
   if (
     selectedTeam === "" &&
     selectedCustomer === "" &&
     (columnHeadToSort !== "id" || order !== "Ascending")
   ) {
-    console.log("FE:  INSIDE non-id / Ascending...", sortedState); // REMOVE
-    console.log("3cache pre-process: ", threeFilteredObjectsCache); // REMOVE
     response = await axios.post("/api/allSelectedButNeedsReSorted", {
       sortedState,
     });

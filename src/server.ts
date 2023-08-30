@@ -105,20 +105,15 @@ app.get(
 
 // --------
 
-// ADDED
-// Filter for ONLY team (swapping out current team selection or from blank):  assemble object in the below format to return to client
+// NO team or customer filter applied (i.e. full DB is returned) but sorting is required on any basis OTHER than by id, ascending
 // Format:  {firstName, lastName, email, teamName, totalRevenue, teamId, id}
 app.post(
   "/api/allSelectedButNeedsReSorted",
   (req: Request, res: Response, next: NextFunction): Response => {
-    // const columnHeadToSort: string = req.body.sortedState.columnHeadToSort; // REMOVE
-    // const order: string = req.body.sortedState.order; // REMOVE
-    // console.log(columnHeadToSort, order); // REMOVE
     const sortedState: sortedStateType = req.body.sortedState;
 
     const fullResultsOfDB: augmentedRepObjectType[] =
       GetEntireUniqueSortedArrayOfObjs(); // Helper fxn
-    console.log(fullResultsOfDB);
 
     const threeFilteredObjectsForClient: nestedFilteredObjectsForClientType = {
       teamCurrentSelectionResults: [],
@@ -126,7 +121,6 @@ app.post(
       combinedCurrentSelectionResults: fullResultsOfDB,
     };
 
-    // NEW
     const reSortedThreeFilteredObjectsForClient: nestedFilteredObjectsForClientType =
       SortByColumnHeaderAscOrDesc(sortedState, threeFilteredObjectsForClient);
 
@@ -146,7 +140,6 @@ app.post(
     const threeFilteredObjectsForClient: nestedFilteredObjectsForClientType =
       TeamNewlySelectedOrReplacedAndCustomerBlank(teamName);
 
-    // NEW, ADDED TO ALL ENDPOINTS
     const reSortedThreeFilteredObjectsForClient: nestedFilteredObjectsForClientType =
       SortByColumnHeaderAscOrDesc(sortedState, threeFilteredObjectsForClient);
 
@@ -240,9 +233,6 @@ app.post(
       threeFilteredObjectsCache,
     }: { threeFilteredObjectsCache: nestedFilteredObjectsForClientType } =
       req.body; // destructuring
-
-    // console.log(sortedState); // REMOVE
-    // console.log(threeFilteredObjectsCache); // REMOVE
 
     const reSortedThreeFilteredObjectsCache: nestedFilteredObjectsForClientType =
       SortByColumnHeaderAscOrDesc(sortedState, threeFilteredObjectsCache);

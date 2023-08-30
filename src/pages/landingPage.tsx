@@ -106,7 +106,6 @@ const LandingPage = (): JSX.Element => {
       if (response?.data) {
         const reSortedThreeFilteredObjects: nestedFilteredObjectsForClientType =
           response.data;
-        // console.log("FE: ", response.data); // REMOVE
 
         setRowResultsOfDB(
           reSortedThreeFilteredObjects.combinedCurrentSelectionResults

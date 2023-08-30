@@ -10,19 +10,8 @@ function SortByColumnHeaderAscOrDesc(
   sortedState: sortedStateType,
   threeFilteredObjectsForClient: nestedFilteredObjectsForClientType
 ) {
-  //   const reSortedThreeFilteredObjectsForClient: nestedFilteredObjectsForClientType =
-  // JSON.parse(JSON.stringify(threeFilteredObjectsForClient)); // deep clone
   const reSortedThreeFilteredObjectsForClient: nestedFilteredObjectsForClientType =
     { ...threeFilteredObjectsForClient }; // deep copy top level, shallow lower level
-  //   const reSortedThreeFilteredObjectsForClient: nestedFilteredObjectsForClientType =
-  //     {
-  //       teamCurrentSelectionResults:
-  //         threeFilteredObjectsForClient?.teamCurrentSelectionResults.slice(),
-  //       customerCurrentSelectionResults:
-  //         threeFilteredObjectsForClient?.customerCurrentSelectionResults.slice(),
-  //       combinedCurrentSelectionResults:
-  //         threeFilteredObjectsForClient?.combinedCurrentSelectionResults.slice(),
-  //     };
 
   const {
     columnHeadToSort,
@@ -47,11 +36,8 @@ function SortByColumnHeaderAscOrDesc(
     Team: "teamName",
     "Total Revenue": "totalRevenue",
   };
-  const columnHeadSchemaToSort = columnHeadMap[columnHeadToSort];
 
-  //   const test: keyof augmentedRepObjectType = "teamName";  // REMOVE
-  console.log("TOP: ", columnHeadToSort, columnHeadSchemaToSort, order); // REMOVE
-  //   console.log(threeFilteredObjectsForClient?.combinedCurrentSelectionResults); // REMOVE
+  const columnHeadSchemaToSort = columnHeadMap[columnHeadToSort];
 
   // ----------
 
@@ -79,12 +65,6 @@ function SortByColumnHeaderAscOrDesc(
           return a[columnHeadSchemaToSort] - b[columnHeadSchemaToSort];
         }
       );
-      //   console.log(
-      //     // reSortedThreeFilteredObjectsForClient?.combinedCurrentSelectionResults,
-      //     "in ascending for NUMS....",
-      //     columnHeadToSort,
-      //     columnHeadSchemaToSort
-      //   ); // REMOVE
     } else {
       // ASCENDING for strings
       reSortedThreeFilteredObjectsForClient?.teamCurrentSelectionResults?.sort(
@@ -102,12 +82,6 @@ function SortByColumnHeaderAscOrDesc(
           return a[columnHeadSchemaToSort] < b[columnHeadSchemaToSort] ? -1 : 1;
         }
       );
-      //   console.log(
-      //     // reSortedThreeFilteredObjectsForClient?.combinedCurrentSelectionResults,
-      //     "in ascending for STRINGS....",
-      //     columnHeadToSort,
-      //     columnHeadSchemaToSort
-      //   ); // REMOVE
     }
   } // end ASCENDING
 
@@ -135,12 +109,6 @@ function SortByColumnHeaderAscOrDesc(
           return b[columnHeadSchemaToSort] - a[columnHeadSchemaToSort];
         }
       );
-      //   console.log(
-      //     // reSortedThreeFilteredObjectsForClient?.combinedCurrentSelectionResults,
-      //     "in descending for NUMS....",
-      //     columnHeadToSort,
-      //     columnHeadSchemaToSort
-      //   ); // REMOVE
     } else {
       // DESCENDING for strings
       reSortedThreeFilteredObjectsForClient?.teamCurrentSelectionResults?.sort(
@@ -158,12 +126,6 @@ function SortByColumnHeaderAscOrDesc(
           return a[columnHeadSchemaToSort] < b[columnHeadSchemaToSort] ? 1 : -1;
         }
       );
-      //   console.log(
-      //     // reSortedThreeFilteredObjectsForClient?.combinedCurrentSelectionResults,
-      //     "in descending for STRINGS....",
-      //     columnHeadToSort,
-      //     columnHeadSchemaToSort
-      //   ); // REMOVE
     }
   } // end DESCENDING
 
