@@ -132,6 +132,12 @@ const LandingPage = (): JSX.Element => {
           setTeamOrCustomerChangedFlag={setTeamOrCustomerChangedFlag}
           selectedCustomer={selectedCustomer}
         />
+        <CustomerDropdownFilter
+          customerList={customerList}
+          setSelectedCustomer={setSelectedCustomer}
+          setTeamOrCustomerChangedFlag={setTeamOrCustomerChangedFlag}
+          selectedCustomer={selectedCustomer}
+        />
       </div>
       <br></br>
       <br></br>
