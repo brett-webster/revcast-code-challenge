@@ -18,63 +18,6 @@ type customerPropsType = {
   selectedCustomer: string | null;
 };
 
-// --------- Components - Initially 2 basic dropdown filters -----------
-// THESE HAVE BEEN REPLACED W/ CUSTOM DROPDOWN FILTERS BELOW
-
-// const TeamDropdownFilter = (props: teamPropsType): JSX.Element => {
-//   const handleOptionChange = (
-//     event: React.ChangeEvent<HTMLSelectElement>
-//   ): void => {
-//     props.setSelectedTeam(event.target.value);
-//     props.setTeamOrCustomerChangedFlag("TEAM changed");
-//   };
-
-//   return (
-//     <div>
-//       <select
-//         id="teamDropdown"
-//         value={props.selectedTeam || ""}
-//         onChange={handleOptionChange}
-//       >
-//         <option value="">-- ALL TEAMS --</option>
-//         {props.teamList.map((option: string) => (
-//           <option key={option} value={option}>
-//             {option}
-//           </option>
-//         ))}
-//       </select>
-//     </div>
-//   );
-// };
-
-// // ---------
-
-// const CustomerDropdownFilter = (props: customerPropsType): JSX.Element => {
-//   const handleOptionChange = (
-//     event: React.ChangeEvent<HTMLSelectElement>
-//   ): void => {
-//     props.setSelectedCustomer(event.target.value);
-//     props.setTeamOrCustomerChangedFlag("CUSTOMER changed");
-//   };
-
-//   return (
-//     <div>
-//       <select
-//         id="customerDropdown"
-//         value={props.selectedCustomer || ""}
-//         onChange={handleOptionChange}
-//       >
-//         <option value="">-- ALL CUSTOMERS --</option>
-//         {props.customerList.map((option: string) => (
-//           <option key={option} value={option}>
-//             {option}
-//           </option>
-//         ))}
-//       </select>
-//     </div>
-//   );
-// };
-
 // ---------
 
 // CUSTOM TEAM DROPDOWN FILTER
@@ -103,7 +46,6 @@ const TeamDropdownFilter = (props: teamPropsType): JSX.Element => {
   window.addEventListener("mousemove", handleMouseMoveOutsideDropdown); // changed from 'click'
 
   const handleClickOnDropdownSelection = (listItem: string): void => {
-    // console.log(dropDownFilterRef?.current, listItem); // REMOVE
     listItem === "-- ALL TEAMS --"
       ? props.setSelectedTeam("")
       : props.setSelectedTeam(listItem); // set TEAM state to selection (reset to "" in case ALL is selected)
@@ -178,7 +120,6 @@ const TeamDropdownFilter = (props: teamPropsType): JSX.Element => {
   // Inserting '-- ALL TEAMS --' to beginning of dropdown list for display
   const expandedTeamList: string[] = props.teamList.slice();
   expandedTeamList.unshift("-- ALL TEAMS --");
-  //   console.log(expandedTeamList); // REMOVE
 
   // Bundle up list of teams as array of <li> items for displaying dropdown list upon click
   const teamListBundle: JSX.Element[] = expandedTeamList.map((listItem) => {
@@ -276,7 +217,6 @@ const CustomerDropdownFilter = (props: customerPropsType): JSX.Element => {
   window.addEventListener("mousemove", handleMouseMoveOutsideDropdown); // changed from 'click'
 
   const handleClickOnDropdownSelection = (listItem: string): void => {
-    // console.log(dropDownFilterRef?.current, listItem); // REMOVE
     listItem === "-- ALL CUSTOMERS --"
       ? props.setSelectedCustomer("")
       : props.setSelectedCustomer(listItem); // set CUSTOMER state to selection (reset to "" in case ALL is selected)
@@ -351,7 +291,6 @@ const CustomerDropdownFilter = (props: customerPropsType): JSX.Element => {
   // Inserting '-- ALL CUSTOMERS --' to beginning of dropdown list for display
   const expandedCustomerList: string[] = props.customerList.slice();
   expandedCustomerList.unshift("-- ALL CUSTOMERS --");
-  //   console.log(expandedCustomerList); // REMOVE
 
   // Bundle up list of customers as array of <li> items for displaying dropdown list upon click
   const customerListBundle: JSX.Element[] = expandedCustomerList.map(

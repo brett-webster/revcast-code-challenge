@@ -37,7 +37,8 @@ function SortByColumnHeaderAscOrDesc(
     "Total Revenue": "totalRevenue",
   };
 
-  const columnHeadSchemaToSort = columnHeadMap[columnHeadToSort];
+  const columnHeadSchemaToSort =
+    columnHeadMap[columnHeadToSort as keyof columnHeadMapType];
 
   // ----------
 
@@ -69,17 +70,26 @@ function SortByColumnHeaderAscOrDesc(
       // ASCENDING for strings
       reSortedThreeFilteredObjectsForClient?.teamCurrentSelectionResults?.sort(
         (a, b) => {
-          return a[columnHeadSchemaToSort] < b[columnHeadSchemaToSort] ? -1 : 1;
+          return a[columnHeadSchemaToSort as keyof augmentedRepObjectType] <
+            b[columnHeadSchemaToSort as keyof augmentedRepObjectType]
+            ? -1
+            : 1;
         }
       );
       reSortedThreeFilteredObjectsForClient?.customerCurrentSelectionResults?.sort(
         (a, b) => {
-          return a[columnHeadSchemaToSort] < b[columnHeadSchemaToSort] ? -1 : 1;
+          return a[columnHeadSchemaToSort as keyof augmentedRepObjectType] <
+            b[columnHeadSchemaToSort as keyof augmentedRepObjectType]
+            ? -1
+            : 1;
         }
       );
       reSortedThreeFilteredObjectsForClient?.combinedCurrentSelectionResults?.sort(
         (a, b) => {
-          return a[columnHeadSchemaToSort] < b[columnHeadSchemaToSort] ? -1 : 1;
+          return a[columnHeadSchemaToSort as keyof augmentedRepObjectType] <
+            b[columnHeadSchemaToSort as keyof augmentedRepObjectType]
+            ? -1
+            : 1;
         }
       );
     }
@@ -113,17 +123,26 @@ function SortByColumnHeaderAscOrDesc(
       // DESCENDING for strings
       reSortedThreeFilteredObjectsForClient?.teamCurrentSelectionResults?.sort(
         (a, b) => {
-          return a[columnHeadSchemaToSort] < b[columnHeadSchemaToSort] ? 1 : -1;
+          return a[columnHeadSchemaToSort as keyof augmentedRepObjectType] <
+            b[columnHeadSchemaToSort as keyof augmentedRepObjectType]
+            ? 1
+            : -1;
         }
       );
       reSortedThreeFilteredObjectsForClient?.customerCurrentSelectionResults?.sort(
         (a, b) => {
-          return a[columnHeadSchemaToSort] < b[columnHeadSchemaToSort] ? 1 : -1;
+          return a[columnHeadSchemaToSort as keyof augmentedRepObjectType] <
+            b[columnHeadSchemaToSort as keyof augmentedRepObjectType]
+            ? 1
+            : -1;
         }
       );
       reSortedThreeFilteredObjectsForClient?.combinedCurrentSelectionResults?.sort(
         (a, b) => {
-          return a[columnHeadSchemaToSort] < b[columnHeadSchemaToSort] ? 1 : -1;
+          return a[columnHeadSchemaToSort as keyof augmentedRepObjectType] <
+            b[columnHeadSchemaToSort as keyof augmentedRepObjectType]
+            ? 1
+            : -1;
         }
       );
     }
