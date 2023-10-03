@@ -8,7 +8,7 @@ import {
   cleanup,
   configure,
 } from "@testing-library/react"; // <--- waitFor https://davidwcai.medium.com/react-testing-library-and-the-not-wrapped-in-act-errors-491a5629193b  /  https://kentcdodds.com/blog/fix-the-not-wrapped-in-act-warning
-import user, { userEvent } from "@testing-library/user-event"; // ADDED & upgraded to version "^14.0.0" from Create React App's default of "^13.5.0"
+import { userEvent } from "@testing-library/user-event"; // ADDED & upgraded to version "^14.0.0" from Create React App's default of "^13.5.0"
 import { debug } from "jest-preview"; // ADDED -- // USEFUL TOOL: open localhost:3336 to view basic DOM UI in browser
 
 import TableComponent from "./TableComponent"; // ADDED
@@ -38,8 +38,7 @@ describe("Unit testing of UI component...", () => {
   );
   test("Correctly renders Surfing the Pipeline with Revcast TITLE in TableComponent.tsx", async () => {
     render(tableComponentWithDummyProps); // assigned above
-    const element = screen.getByText("Surfing the Pipeline with Revcast"); // getByTestId("title") + data-testid="title" NOT needed here <-- https://testing-library.com/docs/queries/about/#priority
-    //   const element = screen.getByRole("title"); // UNDOCUMENT TO VIEW all Roles in DOM since will throw Error
+    const element = screen.getByText("Surfing the Pipeline with Revcast");
     await waitFor(() => {
       expect(element).toHaveTextContent("Surfing the Pipeline with Revcast");
     });
@@ -65,7 +64,6 @@ describe("Unit testing of UI component...", () => {
   // Table Header ---> <thead>
   test("Correctly renders entire TABLE HEADER in TableComponent.tsx", async () => {
     render(tableComponentWithDummyProps);
-    // const tableHeaderElement = screen.getByTestId("tableHeader"); // NOTE:  Replaced w/ getByRole
     const tableHeaderElement = screen.getAllByRole("rowgroup", {})[0]; // NOTE:  screen.getByRole("rowgroup", {}) throws ERROR because 2 rowgroup roles --> <thead> & <tbody>
 
     await waitFor(() => {
@@ -76,7 +74,6 @@ describe("Unit testing of UI component...", () => {
   // Table Body ---> <tbody>
   test("Correctly renders entire TABLE BODY in TableComponent.tsx", async () => {
     render(tableComponentWithDummyProps);
-    //   const tableBodyElement = screen.getByTestId("tableBody"); // NOTE:  Replaced w/ getByRole
     const tableBodyElement = screen.getAllByRole("rowgroup", {})[1]; // NOTE:  screen.getByRole("rowgroup", {}) throws ERROR because 2 rowgroup roles --> <thead> & <tbody>
 
     await waitFor(() => {
@@ -97,7 +94,6 @@ describe("Unit testing of UI component...", () => {
 
   // Column Headers ---> <td> --> INDIVIDUAL CELLS:  ID First Name Last Name Email Team Total Revenue
   test("Correctly renders individual column header ID as a CELL in TableComponent.tsx", async () => {
-    //   user.setup(); // "@testing-library/user-event": "^14.0.0" <--- https://testing-library.com/docs/user-event/intro/
     const user = userEvent.setup();
     render(tableComponentWithDummyProps);
 
@@ -106,13 +102,11 @@ describe("Unit testing of UI component...", () => {
       expect(cellElement).toBeInTheDocument();
     });
 
-    //   console.log(cellElement.style.backgroundColor); // default color = "#34d399" = rgb(52, 211, 153)
     await waitFor(async () => {
       await user.hover(cellElement);
       expect(cellElement).toHaveStyle({
         backgroundColor: "rgb(45, 190, 137)", // hover color = "#2dbe89" = rgb(45, 190, 137)
       });
-      // console.log(cellElement.style.backgroundColor); // hover color = "#2dbe89" = rgb(45, 190, 137)
       // debug();
     });
 
@@ -121,12 +115,10 @@ describe("Unit testing of UI component...", () => {
       expect(cellElement).toHaveStyle({
         backgroundColor: "rgb(52, 211, 153)", // default color = "#34d399" = rgb(52, 211, 153)
       });
-      // console.log(cellElement.style.backgroundColor); // default color = "#34d399" = rgb(52, 211, 153)
     });
   });
 
   test("Correctly renders individual column header First Name as a CELL in TableComponent.tsx", async () => {
-    //   user.setup(); // "@testing-library/user-event": "^14.0.0" <--- https://testing-library.com/docs/user-event/intro/
     const user = userEvent.setup();
     render(tableComponentWithDummyProps);
 
@@ -135,13 +127,11 @@ describe("Unit testing of UI component...", () => {
       expect(cellElement).toBeInTheDocument();
     });
 
-    //   console.log(cellElement.style.backgroundColor); // default color = "#34d399" = rgb(52, 211, 153)
     await waitFor(async () => {
       await user.hover(cellElement);
       expect(cellElement).toHaveStyle({
         backgroundColor: "rgb(45, 190, 137)", // hover color = "#2dbe89" = rgb(45, 190, 137)
       });
-      // console.log(cellElement.style.backgroundColor); // hover color = "#2dbe89" = rgb(45, 190, 137)
     });
 
     await waitFor(async () => {
@@ -149,12 +139,10 @@ describe("Unit testing of UI component...", () => {
       expect(cellElement).toHaveStyle({
         backgroundColor: "rgb(52, 211, 153)", // default color = "#34d399" = rgb(52, 211, 153)
       });
-      // console.log(cellElement.style.backgroundColor); // default color = "#34d399" = rgb(52, 211, 153)
     });
   });
 
   test("Correctly renders individual column header Last Name as a CELL in TableComponent.tsx", async () => {
-    //   user.setup(); // "@testing-library/user-event": "^14.0.0" <--- https://testing-library.com/docs/user-event/intro/
     const user = userEvent.setup();
     render(tableComponentWithDummyProps);
 
@@ -163,13 +151,11 @@ describe("Unit testing of UI component...", () => {
       expect(cellElement).toBeInTheDocument();
     });
 
-    //   console.log(cellElement.style.backgroundColor); // default color = "#34d399" = rgb(52, 211, 153)
     await waitFor(async () => {
       await user.hover(cellElement);
       expect(cellElement).toHaveStyle({
         backgroundColor: "rgb(45, 190, 137)", // hover color = "#2dbe89" = rgb(45, 190, 137)
       });
-      // console.log(cellElement.style.backgroundColor); // hover color = "#2dbe89" = rgb(45, 190, 137)
     });
 
     await waitFor(async () => {
@@ -177,12 +163,10 @@ describe("Unit testing of UI component...", () => {
       expect(cellElement).toHaveStyle({
         backgroundColor: "rgb(52, 211, 153)", // default color = "#34d399" = rgb(52, 211, 153)
       });
-      // console.log(cellElement.style.backgroundColor); // default color = "#34d399" = rgb(52, 211, 153)
     });
   });
 
   test("Correctly renders individual column header Email as a CELL in TableComponent.tsx", async () => {
-    //   user.setup(); // "@testing-library/user-event": "^14.0.0" <--- https://testing-library.com/docs/user-event/intro/
     const user = userEvent.setup();
     render(tableComponentWithDummyProps);
 
@@ -191,13 +175,11 @@ describe("Unit testing of UI component...", () => {
       expect(cellElement).toBeInTheDocument();
     });
 
-    //   console.log(cellElement.style.backgroundColor); // default color = "#34d399" = rgb(52, 211, 153)
     await waitFor(async () => {
       await user.hover(cellElement);
       expect(cellElement).toHaveStyle({
         backgroundColor: "rgb(45, 190, 137)", // hover color = "#2dbe89" = rgb(45, 190, 137)
       });
-      // console.log(cellElement.style.backgroundColor); // hover color = "#2dbe89" = rgb(45, 190, 137)
     });
 
     await waitFor(async () => {
@@ -205,12 +187,10 @@ describe("Unit testing of UI component...", () => {
       expect(cellElement).toHaveStyle({
         backgroundColor: "rgb(52, 211, 153)", // default color = "#34d399" = rgb(52, 211, 153)
       });
-      // console.log(cellElement.style.backgroundColor); // default color = "#34d399" = rgb(52, 211, 153)
     });
   });
 
   test("Correctly renders individual column header Team as a CELL in TableComponent.tsx", async () => {
-    //   user.setup(); // "@testing-library/user-event": "^14.0.0" <--- https://testing-library.com/docs/user-event/intro/
     const user = userEvent.setup();
     render(tableComponentWithDummyProps);
 
@@ -219,13 +199,11 @@ describe("Unit testing of UI component...", () => {
       expect(cellElement).toBeInTheDocument();
     });
 
-    //   console.log(cellElement.style.backgroundColor); // default color = "#34d399" = rgb(52, 211, 153)
     await waitFor(async () => {
       await user.hover(cellElement);
       expect(cellElement).toHaveStyle({
         backgroundColor: "rgb(45, 190, 137)", // hover color = "#2dbe89" = rgb(45, 190, 137)
       });
-      // console.log(cellElement.style.backgroundColor); // hover color = "#2dbe89" = rgb(45, 190, 137)
     });
 
     await waitFor(async () => {
@@ -233,12 +211,10 @@ describe("Unit testing of UI component...", () => {
       expect(cellElement).toHaveStyle({
         backgroundColor: "rgb(52, 211, 153)", // default color = "#34d399" = rgb(52, 211, 153)
       });
-      // console.log(cellElement.style.backgroundColor); // default color = "#34d399" = rgb(52, 211, 153)
     });
   });
 
   test("Correctly renders individual column header Total Revenue as a CELL in TableComponent.tsx", async () => {
-    //   user.setup(); // "@testing-library/user-event": "^14.0.0" <--- https://testing-library.com/docs/user-event/intro/
     const user = userEvent.setup();
     render(tableComponentWithDummyProps);
 
@@ -247,7 +223,6 @@ describe("Unit testing of UI component...", () => {
       expect(cellElement).toBeInTheDocument();
     });
 
-    //   console.log(cellElement.style.backgroundColor); // default color = "#34d399" = rgb(52, 211, 153)
     await waitFor(async () => {
       await user.hover(cellElement);
       expect(cellElement).toHaveStyle({
@@ -261,12 +236,10 @@ describe("Unit testing of UI component...", () => {
       expect(cellElement).toHaveStyle({
         backgroundColor: "rgb(52, 211, 153)", // default color = "#34d399" = rgb(52, 211, 153)
       });
-      // console.log(cellElement.style.backgroundColor); // default color = "#34d399" = rgb(52, 211, 153)
     });
   });
 
   test("onClick/offClick correctly renders individual column header ID and Total Revenue as CELLs with UP/DOWN arrows in TableComponent.tsx", async () => {
-    //   user.setup(); // "@testing-library/user-event": "^14.0.0" <--- https://testing-library.com/docs/user-event/intro/
     const user = userEvent.setup();
     render(tableComponentWithDummyProps);
 
@@ -282,11 +255,9 @@ describe("Unit testing of UI component...", () => {
         backgroundColor: "rgb(45, 190, 137)", // hover color = "#2dbe89" = rgb(45, 190, 137)
         cursor: "pointer", // default = "cursor"
       });
-      // console.log(cellElement.textContent);
     });
 
     await waitFor(() => {
-      // expect(cellElement.textContent).toBe("ID  ▲"); // WHY NOT WORKING??
       // ID element contents (ONLY contains ▲)
       expect(cellElement).toHaveTextContent("ID ▲");
       expect(cellElement).not.toHaveTextContent("▼");
@@ -392,7 +363,6 @@ describe("Unit testing of UI component...", () => {
         "▲" && "▼"
       );
     });
-
     //   debug();
   });
 

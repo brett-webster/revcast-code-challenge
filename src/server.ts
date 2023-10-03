@@ -1,3 +1,4 @@
+// *** SCRIPTS in package.json: ***
 // npm START --------------> " start": "NODE_ENV=development react-scripts start & NODE_ENV=development nodemon src/server.ts",
 // npm run BUILD ---------->  "build": "react-scripts build",
 // npm run DEPLOY --------->  "deploy": "NODE_ENV=production ts-node src/server.ts",
@@ -30,7 +31,7 @@ import {
 // Importing helper fxn containing re-sorting logic
 import { SortByColumnHeaderAscOrDesc } from "./sortingLogicHelperFxn";
 
-export const app: Application = express(); // Exporting express dev server for supertest (to setStateOfMultipleItemsOnInitialPageLoad.test.tsx, fetchPOSTrequestFromCorrectEndpoint.test.tsx & landingPage.test.tsx)
+export const app: Application = express(); // Exporting express dev server for testing -- Supertest (to setStateOfMultipleItemsOnInitialPageLoad.test.tsx, fetchPOSTrequestFromCorrectEndpoint.test.tsx & landingPage.test.tsx)
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -249,7 +250,7 @@ app.post(
 
 // --------
 
-//404 handler
+// 404 handler
 app.use(
   (req: Request, res: Response): Response =>
     res.status(404).json("Page Not Found")
@@ -262,7 +263,7 @@ type ServerError = {
   message: { err: string };
 };
 
-//Global error handler
+// Global error handler
 app.use(
   (
     err: ServerError,

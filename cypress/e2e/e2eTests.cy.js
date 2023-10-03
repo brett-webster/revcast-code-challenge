@@ -47,8 +47,8 @@ describe("Various e2e tests...", () => {
       .contains(/^123 Industries$/) // Picking a random customer from the list
       .get("li")
       .contains(/^XYZ Corporation$/)
-      .click()
-      // .debug(); // UNDOCUMENT to use debugger
+      .click();
+    // .debug(); // UNDOCUMENT to use debugger
 
     // USEFUL for DEBUGGING:  https://docs.cypress.io/guides/guides/debugging#Using-the-Developer-Tools
     // cy.pause(); // insert into code in order to step-thru each command in Command Log... <-- https://docs.cypress.io/api/commands/pause
@@ -146,18 +146,9 @@ describe("Various e2e tests...", () => {
       .trigger("mouseover");
     cy.get("body") // Using click outside of button/dropdown to close dropdown (hover away not working...)
       .click(0, 0);
-    // *** FIX BELOW HOVERING, REPLACE body CLICK ABOVE ***
-    // https://github.com/cypress-io/cypress-example-recipes/tree/master/examples/testing-dom__hover-hidden-elements
-    // cy.get("ul")
-    //   .contains(/^Cocoa Commandos$/) // Picking a random team from the list
-    //   .trigger("mouseout");
-    // cy.get("li")
-    //   .contains(/^Blazing Phoenix$/)
-    //   .trigger("mouseout");
 
     // Click CUSTOMERS button, hover over dropdown and then hover outside dropdown
     cy.get("button")
-      // .contains("XYZ Corporation") // NOTE:  This passes since NOT EXACT match
       .contains(/^-- ALL CUSTOMERS --$/)
       .click();
     cy.get("ul")
@@ -167,20 +158,12 @@ describe("Various e2e tests...", () => {
       .trigger("mouseover");
     cy.get("body") // Using click outside of button/dropdown to close dropdown (hover away not working...)
       .click(0, 0);
-    // *** FIX BELOW HOVERING, REPLACE body CLICK ABOVE ***
-    // cy.get("ul")
-    //   .contains(/^123 Industries$/) // Picking a random customer from the list
-    //   .trigger("mouseout");
-    // cy.get("li")
-    //   .contains(/^EFG Ltd$/)
-    //   .trigger("mouseout");
 
     // ------------ START SECTION w/ TABLE COLUMN HEADERS ------------
     // https://sahithigundu.medium.com/how-to-handle-webtable-in-cypress-automation-e843b7e0cc07
 
     // // REMOVE BELOW
     cy.get("button")
-      // .contains("Thunderbolt") // NOTE:  This passes since NOT EXACT match
       .contains(/^-- ALL TEAMS --$/) // EXACT match
       .click();
     cy.get("ul")
@@ -197,9 +180,9 @@ describe("Various e2e tests...", () => {
     cy.get("td.reps-table-cell")
       .contains(/^ID ▲$/) // ▲ ▼
       .click();
-    // cy.get("td").contains(/^ID$/).click().click(); // Alternatively
     cy.get("td.reps-table-cell").first().should("exist");
 
+    // NOTE:  Cypress does NOT recognize symbols ▲ ▼
     // cy.get("td.reps-table-cell").first().should("have.text", "ID  ▼"); // NOT working for symbols ▲ ▼...
     // cy.get("td.reps-table-cell")
     //   .first()
@@ -277,7 +260,6 @@ describe("Various e2e tests...", () => {
     cy.get("table tbody tr td:nth-child(3)")
       .invoke("text")
       .then((text) => {
-        // expect(firstElem).to.equal(""); // correct syntax BUT throws ERROR since not equal
         resultArr80LastNames = text.split(/[A-Z]/);
         resultArr80LastNames.shift(); // remove empty string at beginning of array
         const onlyCaps = text.replace(/[a-z]/g, ""); // remove all lowercase letters
@@ -285,15 +267,7 @@ describe("Various e2e tests...", () => {
           (elem, index) => onlyCaps[index] + elem
         ); // add back uppercase letter to beginning of each string
         resultArr80LastNames.sort();
-        // cy.get("table tbody tr td:nth-child(3)")
-        //   .invoke("text")
-        //   .should("eq", resultArr80LastNames.join("")); // REMOVE - This works as nested here
       });
-    // .should("eq", resultArr80LastNames.join("")); // REMOVE
-    // expect(resultArr80LastNames).to.deep.equal([]); // REMOVE - returning undefined...
-    // cy.get("table tbody tr td:nth-child(3)")
-    //   .invoke("text")
-    //   .should("eq", resultArr80LastNames.join("")); // REMOVE - undefined again...
 
     // Generate & store array of 80 EMAILS in ASC order (assemble 80 emails programatically & store in closure variable..)
     let resultArr80Emails; // closure variable
@@ -306,95 +280,9 @@ describe("Various e2e tests...", () => {
         ); // add back ".com" to end of each string
         resultArr80Emails.sort();
         resultArr80Emails.shift(); // remove string at beginning of array
-        // expect(resultArr80Emails.length).to.equal(80);
-        // expect(resultArr80Emails).to.equal([]);
       });
 
-    // Generate & store array of 80 Teams in ASC order (assemble 80 IDs programatically & store in closure variable..)
-    // NOTE:  Doing this one MANUALLY -- TEAM sort validation will NOT work as-is for dynamic data...
-    // cy.fixture("resultArr80Teams.json").as("resultArr80Teams"); // Imported above, replaces below variable declaration; fixture not needed  <-- https://docs.cypress.io/api/commands/fixture
-    // let resultArr80Teams = [
-    //   "Royal Ravens",
-    //   "Royal Ravens",
-    //   "Cosmic Cyclones",
-    //   "Teal Titans",
-    //   "Magenta Mystics",
-    //   "Emerald Enchanters",
-    //   "Royal Ravens",
-    //   "Emerald Enchanters",
-    //   "Lime Lightning",
-    //   "Teal Titans",
-    //   "Cocoa Commandos",
-    //   "Lime Lightning",
-    //   "Thunderbolts",
-    //   "Royal Ravens",
-    //   "Teal Titans",
-    //   "Cosmic Cyclones",
-    //   "Cosmic Cyclones",
-    //   "Aqua Serpents",
-    //   "Royal Ravens",
-    //   "Cocoa Commandos",
-    //   "Blazing Phoenix",
-    //   "Aqua Serpents",
-    //   "Emerald Enchanters",
-    //   "Sunset Strikers",
-    //   "Royal Ravens",
-    //   "Cosmic Cyclones",
-    //   "Bubblegum Unicorns",
-    //   "Teal Titans",
-    //   "Thunderbolts",
-    //   "Emerald Enchanters",
-    //   "Royal Ravens",
-    //   "Sunset Strikers",
-    //   "Aqua Serpents",
-    //   "Bubblegum Unicorns",
-    //   "Thunderbolts",
-    //   "Teal Titans",
-    //   "Cosmic Cyclones",
-    //   "Royal Ravens",
-    //   "Aqua Serpents",
-    //   "Emerald Enchanters",
-    //   "Thunderbolts",
-    //   "Royal Ravens",
-    //   "Sunset Strikers",
-    //   "Cocoa Commandos",
-    //   "Aqua Serpents",
-    //   "Magenta Mystics",
-    //   "Emerald Enchanters",
-    //   "Teal Titans",
-    //   "Emerald Enchanters",
-    //   "Thunderbolts",
-    //   "Teal Titans",
-    //   "Bubblegum Unicorns",
-    //   "Sunset Strikers",
-    //   "Bubblegum Unicorns",
-    //   "Emerald Enchanters",
-    //   "Teal Titans",
-    //   "Thunderbolts",
-    //   "Sunset Strikers",
-    //   "Royal Ravens",
-    //   "Sunset Strikers",
-    //   "Thunderbolts",
-    //   "Teal Titans",
-    //   "Emerald Enchanters",
-    //   "Royal Ravens",
-    //   "Cosmic Cyclones",
-    //   "Bubblegum Unicorns",
-    //   "Cocoa Commandos",
-    //   "Bubblegum Unicorns",
-    //   "Blazing Phoenix",
-    //   "Magenta Mystics",
-    //   "Thunderbolts",
-    //   "Bubblegum Unicorns",
-    //   "Thunderbolts",
-    //   "Lime Lightning",
-    //   "Cocoa Commandos",
-    //   "Teal Titans",
-    //   "Blazing Phoenix",
-    //   "Magenta Mystics",
-    //   "Teal Titans",
-    //   "Lime Lightning",
-    // ];
+    // resultArr80Teams is imported from 'fixtures' @ top
 
     // Generate & store array of 80 TOTAL REVENUE in DESC order (assemble 80 emails programatically & store in closure variable..)
     let resultArr80Revenue; // closure variable
@@ -408,7 +296,6 @@ describe("Various e2e tests...", () => {
         });
         resultArr80Revenue.pop(); // remove string at end of array
         resultArr80Revenue.sort().reverse();
-        // expect(resultArr80Revenue).to.equal([]);
       });
 
     // --------------- END PRE-SET OF ARRAY VALUES OF EACH COLUMN (length = 80) ----------------
@@ -422,21 +309,10 @@ describe("Various e2e tests...", () => {
       .get("li")
       .contains(/^Emerald Enchanters$/)
       .click();
-    // SAMPLE CODE
-    // cy.get("td.reps-table-cell").eq(6).should("have.text", "6");
-    // cy.get("td.reps-table-cell").eq(7).should("not.have.text", "Natha"); // EXACT match only
-    // cy.get("table thead tr td:nth-child(1)").eq(0).should("have.text", "ID"); // Alternative, used below
-
-    // cy.get("table tbody tr td:nth-child(1)").eq(1).should("exist"); // 1st column of table (under ID column), 2nd row of TABLE BODY (zero-indexed)
-    // cy.get("table tbody tr td:nth-child(1)").eq(1).should("have.text", "8");
-    // cy.get("table tbody tr td:nth-child(2)")
-    //   .eq(0)
-    //   .should("have.text", "Nathan"); // 2nd column of table (under First Name column), 1st row of TABLE BODY (zero-indexed)
 
     // Assert table dimensions
     cy.get("table tbody tr").should("have.length", "9"); // Assert # of ROWS in table body
     cy.get("table tbody tr td").should("have.length", String(9 * 6)); // Asserts # of TOTAL CELLS in table body
-    // cy.get("table").find("tbody tr").last().should("have.length", "6"); // NOTE:  This does NOT work for column count
 
     // Validate order:  Default sort is by ID ASC...
     // Compare 1st vs 2nd row of table - ID (type NUMBER)
@@ -877,15 +753,7 @@ describe("Various e2e tests...", () => {
           (elem, index) => onlyCaps[index] + elem
         ); // add back uppercase letter to beginning of each string
         resultArr80LastNames.sort();
-        // cy.get("table tbody tr td:nth-child(3)")
-        //   .invoke("text")
-        //   .should("eq", resultArr80LastNames.join("")); // REMOVE - This works as nested here
       });
-    // .should("eq", resultArr80LastNames.join("")); // REMOVE
-    // expect(resultArr80LastNames).to.deep.equal([]); // REMOVE - returning undefined...
-    // cy.get("table tbody tr td:nth-child(3)")
-    //   .invoke("text")
-    //   .should("eq", resultArr80LastNames.join("")); // REMOVE - undefined again...
 
     // Generate & store array of 80 EMAILS in ASC order (assemble 80 emails programatically & store in closure variable..)
     let resultArr80Emails; // closure variable
@@ -898,95 +766,9 @@ describe("Various e2e tests...", () => {
         ); // add back ".com" to end of each string
         resultArr80Emails.sort();
         resultArr80Emails.shift(); // remove string at beginning of array
-        // expect(resultArr80Emails.length).to.equal(80);
-        // expect(resultArr80Emails).to.equal([]);
       });
 
-    // Generate & store array of 80 Teams in ASC order (assemble 80 IDs programatically & store in closure variable..)
-    // NOTE:  Doing this one MANUALLY -- TEAM sort validation will NOT work as-is for dynamic data...
     // resultArr80Teams is imported from 'fixtures' @ top
-    // let resultArr80Teams = [
-    //   "Royal Ravens",
-    //   "Royal Ravens",
-    //   "Cosmic Cyclones",
-    //   "Teal Titans",
-    //   "Magenta Mystics",
-    //   "Emerald Enchanters",
-    //   "Royal Ravens",
-    //   "Emerald Enchanters",
-    //   "Lime Lightning",
-    //   "Teal Titans",
-    //   "Cocoa Commandos",
-    //   "Lime Lightning",
-    //   "Thunderbolts",
-    //   "Royal Ravens",
-    //   "Teal Titans",
-    //   "Cosmic Cyclones",
-    //   "Cosmic Cyclones",
-    //   "Aqua Serpents",
-    //   "Royal Ravens",
-    //   "Cocoa Commandos",
-    //   "Blazing Phoenix",
-    //   "Aqua Serpents",
-    //   "Emerald Enchanters",
-    //   "Sunset Strikers",
-    //   "Royal Ravens",
-    //   "Cosmic Cyclones",
-    //   "Bubblegum Unicorns",
-    //   "Teal Titans",
-    //   "Thunderbolts",
-    //   "Emerald Enchanters",
-    //   "Royal Ravens",
-    //   "Sunset Strikers",
-    //   "Aqua Serpents",
-    //   "Bubblegum Unicorns",
-    //   "Thunderbolts",
-    //   "Teal Titans",
-    //   "Cosmic Cyclones",
-    //   "Royal Ravens",
-    //   "Aqua Serpents",
-    //   "Emerald Enchanters",
-    //   "Thunderbolts",
-    //   "Royal Ravens",
-    //   "Sunset Strikers",
-    //   "Cocoa Commandos",
-    //   "Aqua Serpents",
-    //   "Magenta Mystics",
-    //   "Emerald Enchanters",
-    //   "Teal Titans",
-    //   "Emerald Enchanters",
-    //   "Thunderbolts",
-    //   "Teal Titans",
-    //   "Bubblegum Unicorns",
-    //   "Sunset Strikers",
-    //   "Bubblegum Unicorns",
-    //   "Emerald Enchanters",
-    //   "Teal Titans",
-    //   "Thunderbolts",
-    //   "Sunset Strikers",
-    //   "Royal Ravens",
-    //   "Sunset Strikers",
-    //   "Thunderbolts",
-    //   "Teal Titans",
-    //   "Emerald Enchanters",
-    //   "Royal Ravens",
-    //   "Cosmic Cyclones",
-    //   "Bubblegum Unicorns",
-    //   "Cocoa Commandos",
-    //   "Bubblegum Unicorns",
-    //   "Blazing Phoenix",
-    //   "Magenta Mystics",
-    //   "Thunderbolts",
-    //   "Bubblegum Unicorns",
-    //   "Thunderbolts",
-    //   "Lime Lightning",
-    //   "Cocoa Commandos",
-    //   "Teal Titans",
-    //   "Blazing Phoenix",
-    //   "Magenta Mystics",
-    //   "Teal Titans",
-    //   "Lime Lightning",
-    // ];
 
     // Generate & store array of 80 TOTAL REVENUE in DESC order (assemble 80 emails programatically & store in closure variable..)
     let resultArr80Revenue; // closure variable
@@ -1000,7 +782,6 @@ describe("Various e2e tests...", () => {
         });
         resultArr80Revenue.pop(); // remove string at end of array
         resultArr80Revenue.sort().reverse();
-        // expect(resultArr80Revenue).to.equal([]);
       });
 
     // --------------- END PRE-SET OF ARRAY VALUES OF EACH COLUMN (length = 80) ----------------

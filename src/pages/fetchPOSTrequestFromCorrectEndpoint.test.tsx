@@ -14,7 +14,6 @@ import fetchPOSTrequestFromCorrectEndpoint from "./fetchPOSTrequestFromCorrectEn
 // ---------- BELOW USES JEST w/ SUPERTEST ----------
 
 describe("Integration testing: Jest w/ Supertest for Endpoints...", () => {
-  // const request = supertest(app); // REQUIRED for supertest - TO REMOVE
   let server: any = null;
   let request: any = null;
 
@@ -78,12 +77,6 @@ describe("Integration testing: Jest w/ Supertest for Endpoints...", () => {
     MockedResponse.body.customerCurrentSelectionResults = [];
     MockedResponse.body.combinedCurrentSelectionResults =
       sortedAscByLastNameResults;
-
-    // console.log(
-    //   "RESPONSE: ",
-    //   response.body.combinedCurrentSelectionResults
-    //   //   MockedResponse.body.combinedCurrentSelectionResults
-    // );
 
     expect(response.body).toEqual(MockedResponse.body);
     expect(response.body.combinedCurrentSelectionResults).toHaveLength(
@@ -158,14 +151,7 @@ describe("Integration testing: Jest w/ Supertest for Endpoints...", () => {
     MockedResponse.body.combinedCurrentSelectionResults =
       sortedDescByEmailResults;
 
-    // console.log(
-    //   "RESPONSE: ",
-    //   response.body.combinedCurrentSelectionResults,
-    //   MockedResponse.body.combinedCurrentSelectionResults,
-    //   response.body.combinedCurrentSelectionResults.length
-    // );
-
-    // expect(response.body).toEqual(MockedResponse.body);
+    expect(response.body).toEqual(MockedResponse.body);
     expect(response.body.combinedCurrentSelectionResults).toHaveLength(
       MockedResponse.body.combinedCurrentSelectionResults.length
     ); // 9
@@ -242,13 +228,6 @@ describe("Integration testing: Jest w/ Supertest for Endpoints...", () => {
       sortedAscByTeamResults;
     MockedResponse.body.combinedCurrentSelectionResults =
       sortedAscByTeamResults;
-
-    // console.log(
-    //   "RESPONSE: ",
-    //   response.body.combinedCurrentSelectionResults,
-    //   //   MockedResponse.body.combinedCurrentSelectionResults,
-    //   response.body.combinedCurrentSelectionResults.length
-    // );
 
     expect(response.body).toEqual(MockedResponse.body);
     expect(response.body.combinedCurrentSelectionResults).toHaveLength(
@@ -329,14 +308,7 @@ describe("Integration testing: Jest w/ Supertest for Endpoints...", () => {
     MockedResponse.body.combinedCurrentSelectionResults =
       sortedAscByFirstNameResults;
 
-    // console.log(
-    //   "RESPONSE: ",
-    //   response.body.combinedCurrentSelectionResults,
-    //   MockedResponse.body.combinedCurrentSelectionResults,
-    //   response.body.combinedCurrentSelectionResults.length
-    // );
-
-    // expect(response.body).toEqual(MockedResponse.body);
+    expect(response.body).toEqual(MockedResponse.body);
     expect(response.body.combinedCurrentSelectionResults).toHaveLength(
       MockedResponse.body.combinedCurrentSelectionResults.length
     ); // 4
@@ -419,13 +391,6 @@ describe("Integration testing: Jest w/ Supertest for Endpoints...", () => {
       response.body.customerCurrentSelectionResults;
     MockedResponse.body.combinedCurrentSelectionResults = sortedDescByIDresults;
 
-    // console.log(
-    //   "RESPONSE: ",
-    //   response.body.combinedCurrentSelectionResults,
-    //   MockedResponse.body.combinedCurrentSelectionResults,
-    //   response.body.combinedCurrentSelectionResults.length
-    // );
-
     expect(response.body).toEqual(MockedResponse.body);
     expect(response.body.combinedCurrentSelectionResults).toHaveLength(
       MockedResponse.body.combinedCurrentSelectionResults.length
@@ -466,16 +431,16 @@ describe("Integration testing: Jest w/ Supertest for Endpoints...", () => {
         },
       })
       .expect(200); // Correctly passes
-    //     return request
-    //       .post("/api/bothSelectedCustomerJustChanged")
-    //       .send({})
-    //       .expect(500); // Correctly passes (error)
+    // return request
+    //   .post("/api/bothSelectedCustomerJustChanged")
+    //   .send({})
+    //   .expect(500); // Correctly passes (error expected)
   });
 }); // END describe("Integration testing: Jest w/ Supertest for Endpoints...")
 
-// --------
+// ---------------------------------------
 
-// Additional tests for fetchPOSTrequestFromCorrectEndpoint.tsx -- covering statements missed in Jest Coverage ---> file:///Users/sarahkhuwaja/brett/Revcast-take-home/revcast-code-challenge/coverage/lcov-report/src/pages/index.html
+// Additional tests for fetchPOSTrequestFromCorrectEndpoint.tsx -- covering statements missed in Jest Coverage Report ---> file:///Users/sarahkhuwaja/brett/Revcast-take-home/revcast-code-challenge/coverage/lcov-report/src/pages/index.html
 describe("Additional tests for fetchPOSTrequestFromCorrectEndpoint.tsx -- covering some statements missed in Jest Coverage", () => {
   test('Following Control flow:  selectedTeam === "" && selectedCustomer === "" && (columnHeadToSort !== "id" || order !== "Ascending")', async () => {
     const response = await fetchPOSTrequestFromCorrectEndpoint(
@@ -492,7 +457,7 @@ describe("Additional tests for fetchPOSTrequestFromCorrectEndpoint.tsx -- coveri
       {
         columnHeadToSort: "id",
         order: "Descending",
-      } // sortedState (order differs)
+      } // sortedState (order differs from default)
     );
     expect(response).toBeUndefined(); // No need to worry about response here, testing only for conditional logic coverage
   });

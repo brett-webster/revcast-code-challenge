@@ -3,8 +3,6 @@ import { useState } from "react";
 
 import type { augmentedRepObjectType } from "../server";
 
-// import "../index.css";  // REMOVE?
-
 // -------
 
 // Using typing here for props bc in-line destructuring unwieldy
@@ -62,13 +60,7 @@ const ColumnHeaderCell = ({
   else if (sortedState.order === "Ascending") nextSortingOrder = "Descending";
   else nextSortingOrder = "Ascending";
 
-  // TO REMOVE
-  // if (process.env.NODE_ENV === "test") {
-  //   nextSortingOrder = sortedState.order; // overwrite above toggle w. props passed in from unit test
-  //   // console.log("nextSortingOrder:  ", nextSortingOrder, sortedState);
-  // }
-
-  // :hover in CSS NOT working for some reason so using mouseOver in-line...
+  // :hover in CSS NOT working for some reason so using mouseOver in-line throughout...
   const [cellBackgroundColor, setCellBackgroundColorOnHover] =
     useState<string>("#34d399");
   const [mouseCursorType, setMouseCursor] = useState<string>("cursor");
@@ -85,7 +77,6 @@ const ColumnHeaderCell = ({
 
   const columnHeaderCell: JSX.Element = (
     <td
-      //   id="reps-table-cell-header"  // :hover in CSS not working for some reason...
       style={headerCellStyle}
       onMouseOver={() => {
         setCellBackgroundColorOnHover("#2dbe89");
@@ -138,10 +129,7 @@ const ColumnHeader = ({
   );
 
   return (
-    <thead
-      style={{ fontWeight: 600, backgroundColor: "#34d399" }}
-      // data-testid="tableHeader"
-    >
+    <thead style={{ fontWeight: 600, backgroundColor: "#34d399" }}>
       <tr>{columnHeaderNamesBundle}</tr>
     </thead>
   );
@@ -178,13 +166,7 @@ const TableContent = ({
     )
   );
 
-  return (
-    <tbody
-    // data-testid="tableBody"
-    >
-      {bundledTable}
-    </tbody>
-  );
+  return <tbody>{bundledTable}</tbody>;
 }; // end TableContent Component
 
 // -------

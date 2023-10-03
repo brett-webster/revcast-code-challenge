@@ -36,9 +36,7 @@ const TeamDropdownFilter = (props: teamPropsType): JSX.Element => {
     setDropdownIsOpenBoolean(!dropdownIsOpenBoolean); // toggle this
   };
 
-  const handleMouseMoveOutsideDropdown = (
-    event: any // React.MouseEvent<Window> ??
-  ): void => {
+  const handleMouseMoveOutsideDropdown = (event: any): void => {
     if (
       dropdownIsOpenBoolean &&
       !dropDownFilterRef?.current?.contains(event.target as Node) // latter checks for given node w/in DOM
@@ -86,7 +84,7 @@ const TeamDropdownFilter = (props: teamPropsType): JSX.Element => {
   };
 
   const [filterBackgroundColor, setFilterBackgroundColorOnHover] =
-    useState<string>("#bee1d4"); // previously WRONG --> "#34d399"
+    useState<string>("#bee1d4");
   const [mouseCursorOnHoverStyle, setMouseCursorOnHover] =
     useState<string>("cursor");
 
@@ -128,14 +126,13 @@ const TeamDropdownFilter = (props: teamPropsType): JSX.Element => {
   if (process.env.NODE_ENV === "test") {
     expandedTeamList = ["-- ALL TEAMS --"].concat(teamListArrResult);
   }
-  // console.log("INSIDE AGAIN...TeamDropdownFilter render..." + expandedTeamList);
 
   // Bundle up list of teams as array of <li> items for displaying dropdown list upon click
   const teamListBundle: JSX.Element[] = expandedTeamList?.map((listItem) => {
     return (
       <li
         onMouseEnter={() => {
-          //   setDropDownListItemBackgroundColor("#34d399"); // RE-INSTATE, MAKES ALL li's GREEN
+          //   setDropDownListItemBackgroundColor("#34d399"); // FIX & RE-INSTATE, INCORRECTLY MAKES ALL li's GREEN
           setMouseCursorOnHoverTypeListItem("pointer");
         }}
         onMouseLeave={() => {
@@ -145,7 +142,6 @@ const TeamDropdownFilter = (props: teamPropsType): JSX.Element => {
         onClick={() => handleClickOnDropdownSelection(listItem)}
         style={dropDownListItemStyle}
         key={`${listItem}DROPDOWN`}
-        // data-testid={`${listItem}TESTID`}
       >
         {listItem}
       </li>
@@ -190,7 +186,6 @@ const TeamDropdownFilter = (props: teamPropsType): JSX.Element => {
               overflowY: "auto", // add a scroll bar
               paddingLeft: 0,
             }}
-            // data-testid="dropdownListTEAMS"
           >
             {teamListBundle}
           </ul>
@@ -214,9 +209,7 @@ const CustomerDropdownFilter = (props: customerPropsType): JSX.Element => {
     setDropdownIsOpenBoolean(!dropdownIsOpenBoolean); // toggle this
   };
 
-  const handleMouseMoveOutsideDropdown = (
-    event: any // React.MouseEvent<Window> ??
-  ): void => {
+  const handleMouseMoveOutsideDropdown = (event: any): void => {
     if (
       dropdownIsOpenBoolean &&
       !dropDownFilterRef?.current?.contains(event.target as Node) // latter checks for given node w/in DOM
@@ -264,7 +257,7 @@ const CustomerDropdownFilter = (props: customerPropsType): JSX.Element => {
   };
 
   const [filterBackgroundColor, setFilterBackgroundColorOnHover] =
-    useState<string>("#bee1d4"); // previously WRONG --> "#34d399"
+    useState<string>("#bee1d4");
   const [mouseCursorOnHoverStyle, setMouseCursorOnHover] =
     useState<string>("cursor");
 
@@ -315,7 +308,7 @@ const CustomerDropdownFilter = (props: customerPropsType): JSX.Element => {
       return (
         <li
           onMouseEnter={() => {
-            //   setDropDownListItemBackgroundColor("#34d399"); // RE-INSTATE, MAKES ALL li's GREEN
+            //   setDropDownListItemBackgroundColor("#34d399"); // FIX & RE-INSTATE, INCORRECTLY MAKES ALL li's GREEN
             setMouseCursorOnHoverTypeListItem("pointer");
           }}
           onMouseLeave={() => {
@@ -325,7 +318,6 @@ const CustomerDropdownFilter = (props: customerPropsType): JSX.Element => {
           onClick={() => handleClickOnDropdownSelection(listItem)}
           style={dropDownListItemStyle}
           key={`${listItem}DROPDOWN`}
-          // data-testid={`${listItem}TESTID`}
         >
           {listItem}
         </li>
@@ -373,7 +365,6 @@ const CustomerDropdownFilter = (props: customerPropsType): JSX.Element => {
               overflowY: "auto", // add a scroll bar
               paddingLeft: 0,
             }}
-            // data-testid={"dropdownListCUSTOMERS"}
           >
             {customerListBundle}
           </ul>

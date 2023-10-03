@@ -7,7 +7,6 @@ import { sortedDescByIDinput } from "../data/testingDataForsortingLogicHelperFxn
 // ---------- BELOW USES JEST w/ SUPERTEST (integration testing) ----------
 
 describe("Integration testing: Jest w/ Supertest for Endpoints...", () => {
-  //   const request = supertest(app); // REQUIRED for supertest
   let server: any = null;
   let request: any = null;
 
@@ -38,10 +37,6 @@ describe("Integration testing: Jest w/ Supertest for Endpoints...", () => {
   // -----------
 
   test("Correctly returns SORTED TABLE on inital load from landingPage.tsx", async () => {
-    // MockedResponse = {
-    //   ...MockedResponse,
-    //   body.combinedCurrentSelectionResults: sortedDescByTotalRevenueResults,
-    // };
     MockedResponse.body.combinedCurrentSelectionResults = sortedDescByIDinput;
     const sampleObjectHighestRevenue: augmentedRepObjectType = {
       id: 34,
@@ -73,11 +68,6 @@ describe("Integration testing: Jest w/ Supertest for Endpoints...", () => {
         combinedCurrentSelectionResults: entireUniqueSortedArrayOfObjsResult,
       },
     });
-    // console.log(
-    //   "RESPONSE: ",
-    //   response.body.combinedCurrentSelectionResults,
-    //   MockedResponse.body.combinedCurrentSelectionResults
-    // );
 
     expect(response.body).toEqual(MockedResponse.body);
     expect(response.body.combinedCurrentSelectionResults).toHaveLength(
