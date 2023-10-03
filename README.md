@@ -1,67 +1,108 @@
-## Wire Frames
+# Revcast App
 
-![Example Table](./public/example-table.png)
 
-![Customer Dropdown](./public/customer-dropdown.png)
+<p align="center">
+  <img width="500" src="/public/revcast-logo.svg">
+</p>
 
-![Team Dropdown](./public/dropdown-teams.png)
 
-![Company Filter](./public/company-filter.png)
+## Setup Instructions
+### Cloning Repo:
+Pull down shared ‘revcast-code-challenge’ repo into your local directory.  Use Github’s fork function, then clone the repo by entering the below command into your CLI.  Navigate to that directory
+```bash
+git clone [https-url] [new-folder-name]
+cd [new-folder-name]
+```
 
-![Team Filter](./public/team-filter.png)
+NOTE:
+```bash
+https-url = https://github.com/brett-webster/revcast-code-challenge.git
+```
 
-## AC
-- Create a table of reps that includes the following columns: Name (first + last), Email, Team, Total Revenue
-- Add the following filters: Team Name, Customer
-- Use the data from `src/api`
-## Dev Notes
-- Mantine has been installed as an optional component library [Mantine Docs](https://mantine.dev/)
-- Your designs do not need to match styling or layout of the wire frames. They are there as a guide
-- `npm i`
+### Installing Node Packages:
+Batch install required libraries/dependencies (see package.json)
+```bash
+npm install
+```
 
-# Getting Started with Create React App
+### Dev mode:  
+Enter the below command in the CLI to run the app in development mode (http://localhost:3000/)
+```bash
+npm start
+```
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+### Production mode:  
+Enter the below command in the CLI to build and bundle the app using Webpack (results sent to ./build folder)
+```bash
+npm run build
+```
 
-## Available Scripts
+Once built, enter the below command in the CLI to run the app in production mode (http://localhost:4000/)
+```bash
+npm run deploy
+```
 
-In the project directory, you can run:
+### Testing mode:  
+Enter the below command in the CLI to run a comprehensive suite of unit and integration tests (Jest, RTL, Supertest/Axios)
+```bash
+npm test
+```
+Enter the below commands in the CLI to run testing coverage analysis of unit and integration tests  
+```bash
+npm run coverage
+```
+Enter the below command in the CLI to run end-to-end tests in the CLI (Cypress)
+```bash
+npm run e2e
+```
+Enter the below command in the CLI to run end-to-end tests in the Cypress Test Runner UI
+```bash
+npm run cypress:open
+```
+Enter the below command in the CLI to run linter
+```bash
+npm run lint
+```
 
-### `npm start`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+<br> </br>
+## The App
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+<p align="center">
+  <img width="1200" src="/public/Revcast-table-screenshot.png">
+</p>
 
-### `npm test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Summary
+The ‘Revcast App’ uses the sales rep JSON data found in the `src/api` directory to create an interactive, dynamic table to quickly view sales rep performance results.  App allows users to filter table results by 'Team Name' and/or 'Customer Name', as well as sort any of the table's 6 columns in ascending or descending order.  Table columns include:  Rep ID, First Name, Last Name, Email, Team, Total Revenue.  Give it a spin!
 
-### `npm run build`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Data Overview
+- 80 sales reps
+- 12 teams
+- 7 customers
+- 1000 sales opportunities
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Potential Future Improvements
+- Reduce the number of API endpoints (in hindsight performance enhancement from caching / additional endpoints likely outweighed by added complexity)
+- Utilize an UI components library like Mantine for front-end components (e.g. dropdown filters, sortable column headers)
+- Add ability to filter for multiple Teams and/or Customers (instead of a single list item at a time)
+- Add composite sort functionality (e.g. enable user to sort descending by Revenue in ascending alphabetical order by First Name -- some sales reps share the same First or Last Name)
+- Add text search functionality by a sale rep's Last Name
+- Work with a professional designer :)
 
-### `npm run eject`
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Tech Stack
+- Create React App
+- React.js
+- TypeScript
+- Node.js
+- Express.js
+- Webpack
+- Postman
+- Jest
+- React Testing Library
+- Supertest
+- Axios
+- Cypress
