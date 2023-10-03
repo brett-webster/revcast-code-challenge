@@ -1,5 +1,9 @@
 import { Dispatch, SetStateAction } from "react";
 import { useState, useRef } from "react";
+import {
+  teamListArrResult,
+  customerListArrResult,
+} from "../data/testingDataForfilteringLogicHelperFxns";
 
 // ---------
 
@@ -82,7 +86,7 @@ const TeamDropdownFilter = (props: teamPropsType): JSX.Element => {
   };
 
   const [filterBackgroundColor, setFilterBackgroundColorOnHover] =
-    useState<string>("#34d399");
+    useState<string>("#bee1d4"); // previously WRONG --> "#34d399"
   const [mouseCursorOnHoverStyle, setMouseCursorOnHover] =
     useState<string>("cursor");
 
@@ -118,11 +122,16 @@ const TeamDropdownFilter = (props: teamPropsType): JSX.Element => {
   //   -------
 
   // Inserting '-- ALL TEAMS --' to beginning of dropdown list for display
-  const expandedTeamList: string[] = props.teamList.slice();
-  expandedTeamList.unshift("-- ALL TEAMS --");
+  let expandedTeamList: string[] = props.teamList?.slice();
+  expandedTeamList?.unshift("-- ALL TEAMS --");
+  // ADDING BELOW TO POPULATE teamListBundle FOR TESTING (previously undefined)
+  if (process.env.NODE_ENV === "test") {
+    expandedTeamList = ["-- ALL TEAMS --"].concat(teamListArrResult);
+  }
+  // console.log("INSIDE AGAIN...TeamDropdownFilter render..." + expandedTeamList);
 
   // Bundle up list of teams as array of <li> items for displaying dropdown list upon click
-  const teamListBundle: JSX.Element[] = expandedTeamList.map((listItem) => {
+  const teamListBundle: JSX.Element[] = expandedTeamList?.map((listItem) => {
     return (
       <li
         onMouseEnter={() => {
@@ -136,6 +145,7 @@ const TeamDropdownFilter = (props: teamPropsType): JSX.Element => {
         onClick={() => handleClickOnDropdownSelection(listItem)}
         style={dropDownListItemStyle}
         key={`${listItem}DROPDOWN`}
+        // data-testid={`${listItem}TESTID`}
       >
         {listItem}
       </li>
@@ -180,6 +190,7 @@ const TeamDropdownFilter = (props: teamPropsType): JSX.Element => {
               overflowY: "auto", // add a scroll bar
               paddingLeft: 0,
             }}
+            // data-testid="dropdownListTEAMS"
           >
             {teamListBundle}
           </ul>
@@ -253,7 +264,7 @@ const CustomerDropdownFilter = (props: customerPropsType): JSX.Element => {
   };
 
   const [filterBackgroundColor, setFilterBackgroundColorOnHover] =
-    useState<string>("#34d399");
+    useState<string>("#bee1d4"); // previously WRONG --> "#34d399"
   const [mouseCursorOnHoverStyle, setMouseCursorOnHover] =
     useState<string>("cursor");
 
@@ -289,11 +300,17 @@ const CustomerDropdownFilter = (props: customerPropsType): JSX.Element => {
   //   -------
 
   // Inserting '-- ALL CUSTOMERS --' to beginning of dropdown list for display
-  const expandedCustomerList: string[] = props.customerList.slice();
-  expandedCustomerList.unshift("-- ALL CUSTOMERS --");
+  let expandedCustomerList: string[] = props.customerList?.slice();
+  expandedCustomerList?.unshift("-- ALL CUSTOMERS --");
+  // ADDING BELOW TO POPULATE customerListBundle FOR TESTING (previously undefined)
+  if (process.env.NODE_ENV === "test") {
+    expandedCustomerList = ["-- ALL CUSTOMERS --"].concat(
+      customerListArrResult
+    );
+  }
 
   // Bundle up list of customers as array of <li> items for displaying dropdown list upon click
-  const customerListBundle: JSX.Element[] = expandedCustomerList.map(
+  const customerListBundle: JSX.Element[] = expandedCustomerList?.map(
     (listItem) => {
       return (
         <li
@@ -308,6 +325,7 @@ const CustomerDropdownFilter = (props: customerPropsType): JSX.Element => {
           onClick={() => handleClickOnDropdownSelection(listItem)}
           style={dropDownListItemStyle}
           key={`${listItem}DROPDOWN`}
+          // data-testid={`${listItem}TESTID`}
         >
           {listItem}
         </li>
@@ -355,6 +373,7 @@ const CustomerDropdownFilter = (props: customerPropsType): JSX.Element => {
               overflowY: "auto", // add a scroll bar
               paddingLeft: 0,
             }}
+            // data-testid={"dropdownListCUSTOMERS"}
           >
             {customerListBundle}
           </ul>

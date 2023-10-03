@@ -3,7 +3,7 @@ import { useState } from "react";
 
 import type { augmentedRepObjectType } from "../server";
 
-import "../index.css";
+// import "../index.css";  // REMOVE?
 
 // -------
 
@@ -61,6 +61,12 @@ const ColumnHeaderCell = ({
     nextSortingOrder = "Ascending";
   else if (sortedState.order === "Ascending") nextSortingOrder = "Descending";
   else nextSortingOrder = "Ascending";
+
+  // TO REMOVE
+  // if (process.env.NODE_ENV === "test") {
+  //   nextSortingOrder = sortedState.order; // overwrite above toggle w. props passed in from unit test
+  //   // console.log("nextSortingOrder:  ", nextSortingOrder, sortedState);
+  // }
 
   // :hover in CSS NOT working for some reason so using mouseOver in-line...
   const [cellBackgroundColor, setCellBackgroundColorOnHover] =
@@ -132,7 +138,10 @@ const ColumnHeader = ({
   );
 
   return (
-    <thead style={{ fontWeight: 600, backgroundColor: "#34d399" }}>
+    <thead
+      style={{ fontWeight: 600, backgroundColor: "#34d399" }}
+      // data-testid="tableHeader"
+    >
       <tr>{columnHeaderNamesBundle}</tr>
     </thead>
   );
@@ -169,7 +178,13 @@ const TableContent = ({
     )
   );
 
-  return <tbody>{bundledTable}</tbody>;
+  return (
+    <tbody
+    // data-testid="tableBody"
+    >
+      {bundledTable}
+    </tbody>
+  );
 }; // end TableContent Component
 
 // -------
@@ -217,7 +232,7 @@ const TableComponent = ({
             display: "flex",
           }}
         >
-          Surfing the Pipeline with Revcast&nbsp;&nbsp;&nbsp;
+          Surfing the Pipeline with Revcast!&nbsp;&nbsp;&nbsp;
         </div>
       </div>
 

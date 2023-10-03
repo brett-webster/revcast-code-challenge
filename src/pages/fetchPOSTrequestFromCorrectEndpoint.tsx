@@ -37,8 +37,7 @@ async function fetchPOSTrequestFromCorrectEndpoint(
     setRowResultsOfDB(fullRowResultsOfDBinCache);
   }
 
-  // ADDED
-  // Dropdowns reset to initial state (both blank/'') BUT still need to ping back end if sorting is anything OTHER THAN by id, ascending
+  // Dropdowns reset to initial state (both blank / "") BUT still need to ping back end if sorting is anything OTHER THAN by id, ascending
   if (
     selectedTeam === "" &&
     selectedCustomer === "" &&
@@ -96,7 +95,6 @@ async function fetchPOSTrequestFromCorrectEndpoint(
       sortedState,
     });
   } // --- end conditionals
-
   return response;
 }
 

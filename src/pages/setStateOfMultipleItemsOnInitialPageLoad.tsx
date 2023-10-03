@@ -25,7 +25,7 @@ function setStateOfMultipleItemsOnInitialPageLoad(
       const response: AxiosResponse = await axios.get(
         "/api/getUniqueSortedTeamList"
       );
-      const teamListArray: string[] = response.data;
+      const teamListArray: string[] = response?.data;
       setTeamList(teamListArray);
     })();
   } catch {
@@ -38,7 +38,7 @@ function setStateOfMultipleItemsOnInitialPageLoad(
       const response: AxiosResponse = await axios.get(
         "/api/getUniqueSortedCustomerList"
       );
-      const customerListArray: string[] = response.data;
+      const customerListArray: string[] = response?.data;
       setCustomerList(customerListArray);
     })();
   } catch {
@@ -52,7 +52,7 @@ function setStateOfMultipleItemsOnInitialPageLoad(
         "/api/getEntireUniqueSortedArrayOfObjs"
       );
 
-      const rowResultsOfDB: augmentedRepObjectType[] = response.data;
+      const rowResultsOfDB: augmentedRepObjectType[] = response?.data;
       setRowResultsOfDB(rowResultsOfDB);
       setFullRowResultsOfDBtoCache(rowResultsOfDB); // Set this ONLY once so cached for future
       setThreeFilteredObjectsCache({

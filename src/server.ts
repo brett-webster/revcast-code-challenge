@@ -1,6 +1,12 @@
-// npm START -------> "start": "NODE_ENV=development react-scripts start & NODE_ENV=development nodemon src/server.ts",
-// npm run BUILD ---> "build": "react-scripts build",
-// npm run DEPLOY --> "deploy": "NODE_ENV=production ts-node src/server.ts",
+// npm START --------------> " start": "NODE_ENV=development react-scripts start & NODE_ENV=development nodemon src/server.ts",
+// npm run BUILD ---------->  "build": "react-scripts build",
+// npm run DEPLOY --------->  "deploy": "NODE_ENV=production ts-node src/server.ts",
+// npm TEST --------------->  "test": "jest-preview & react-scripts test --verbose --maxWorkers=1",
+// npm run E2E ------------>  "e2e": "cypress open",
+// npm run cypress:open --->  "cypress open",
+// npm run COVERAGE ------->  "coverage": "react-scripts test --coverage --watchAll=false --collectCoverageFrom='!src/(data|api)/**/*.{ts,tsx}'",   // https://www.youtube.com/watch?v=W-dc5fpxUVs  * NOTE: Moved collectCoverageFrom to bottom of package.json under "jest": {...}
+// ----------------------------------> LINK to Coverage Report: file:///Users/sarahkhuwaja/brett/Revcast-take-home/revcast-code-challenge/coverage/lcov-report/index.html
+// npm run LINT ----------->  "lint": "eslint --ignore-path .gitignore ."
 // "proxy": "http://localhost:4000"
 
 // --------
@@ -8,7 +14,7 @@
 import express, { Request, Response, NextFunction, Application } from "express";
 import path from "path";
 import * as dotenv from "dotenv";
-import type { Representative, Team, SalesOpportunity } from "./data";
+import type { Representative } from "./data";
 
 // Importing helper fxns containing filtering logic
 import {
@@ -24,7 +30,7 @@ import {
 // Importing helper fxn containing re-sorting logic
 import { SortByColumnHeaderAscOrDesc } from "./sortingLogicHelperFxn";
 
-const app: Application = express();
+export const app: Application = express(); // Exporting express dev server for supertest (to setStateOfMultipleItemsOnInitialPageLoad.test.tsx, fetchPOSTrequestFromCorrectEndpoint.test.tsx & landingPage.test.tsx)
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -234,8 +240,8 @@ app.post(
     }: { threeFilteredObjectsCache: nestedFilteredObjectsForClientType } =
       req.body; // destructuring
 
-    const reSortedThreeFilteredObjectsCache: nestedFilteredObjectsForClientType =
-      SortByColumnHeaderAscOrDesc(sortedState, threeFilteredObjectsCache);
+    // const reSortedThreeFilteredObjectsCache: nestedFilteredObjectsForClientType = // REMOVE THIS SINCE UNUSED VARIABLE...
+    SortByColumnHeaderAscOrDesc(sortedState, threeFilteredObjectsCache);
 
     return res.status(200).json(threeFilteredObjectsCache);
   }
@@ -280,6 +286,10 @@ app.use(
 // Create-react-app server:  front-end html + React bundle --> port 3000 in dev mode, utilizing 4000 in prod mode
 // Express dev server:  provides API data & business logic --> port 4000 in both dev mode & in prod mode
 // Prod mode:  Everything served off of single port 4000 once built/deployed
-app.listen(4000);
+
+// Below conditional avoids "listen EADDRINUSE: address already in use :::4000" error when testing <--- https://zellwk.com/blog/endpoint-testing/ "You want to allow each test file to start a server on their own. To do this, you need to export 'app' without listening to it."
+if (process.env.NODE_ENV !== "test") {
+  app.listen(4000);
+}
 
 // --------

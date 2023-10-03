@@ -307,6 +307,8 @@ export {
   CustomerNewlySelectedOrReplacedAndTeamBlank,
   TeamDisplayedThenCustomerSelected,
   CustomerDisplayedThenTeamSelected,
+  FilterEntireDatabaseByTeamName, // ADDED FOR TESTING
+  FilterEntireDatabaseByCustomerName, // ADDED FOR TESTING
 };
 
 // --------
