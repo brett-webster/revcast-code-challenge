@@ -9,6 +9,10 @@ import {
   TeamDropdownFilter,
   CustomerDropdownFilter,
 } from "./dropdownComponents";
+import {
+  TeamDropdownFilterMantine,
+  CustomerDropdownFilterMantine,
+} from "./dropdownComponentsMantine";
 
 import type {
   augmentedRepObjectType,
@@ -120,24 +124,24 @@ const LandingPage = (): JSX.Element => {
   return (
     <>
       <div style={{ display: "flex", justifyContent: "none" }}>
-        <TeamDropdownFilter
+        <TeamDropdownFilterMantine
           teamList={teamList}
           setSelectedTeam={setSelectedTeam}
           setTeamOrCustomerChangedFlag={setTeamOrCustomerChangedFlag}
           selectedTeam={selectedTeam}
         />
-        <CustomerDropdownFilter
+        <CustomerDropdownFilterMantine
           customerList={customerList}
           setSelectedCustomer={setSelectedCustomer}
           setTeamOrCustomerChangedFlag={setTeamOrCustomerChangedFlag}
           selectedCustomer={selectedCustomer}
         />
-        <CustomerDropdownFilter
+        {/* <CustomerDropdownFilter
           customerList={customerList}
           setSelectedCustomer={setSelectedCustomer}
           setTeamOrCustomerChangedFlag={setTeamOrCustomerChangedFlag}
           selectedCustomer={selectedCustomer}
-        />
+        /> */}
       </div>
       <br></br>
       <br></br>

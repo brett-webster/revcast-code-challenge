@@ -21,7 +21,7 @@ function App() {
           backgroundColor:
             theme.colorScheme === "dark"
               ? theme.colors.dark[8]
-              : theme.colors.gray[0],
+              : theme.colors.green[0],
         },
         position: "absolute",
       })}
