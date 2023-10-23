@@ -4,11 +4,12 @@ import axios, { AxiosResponse } from "axios";
 
 import setStateOfMultipleItemsOnInitialPageLoad from "./setStateOfMultipleItemsOnInitialPageLoad";
 import fetchPOSTrequestFromCorrectEndpoint from "./fetchPOSTrequestFromCorrectEndpoint";
-import TableComponent from "./TableComponent";
-import {
-  TeamDropdownFilter,
-  CustomerDropdownFilter,
-} from "./dropdownComponents";
+// import TableComponent from "./TableComponent";
+import TableComponentMantine from "./TableComponentMantine";
+// import {
+//   TeamDropdownFilter,
+//   CustomerDropdownFilter,
+// } from "./dropdownComponents";
 import {
   TeamDropdownFilterMantine,
   CustomerDropdownFilterMantine,
@@ -136,16 +137,10 @@ const LandingPage = (): JSX.Element => {
           setTeamOrCustomerChangedFlag={setTeamOrCustomerChangedFlag}
           selectedCustomer={selectedCustomer}
         />
-        {/* <CustomerDropdownFilter
-          customerList={customerList}
-          setSelectedCustomer={setSelectedCustomer}
-          setTeamOrCustomerChangedFlag={setTeamOrCustomerChangedFlag}
-          selectedCustomer={selectedCustomer}
-        /> */}
       </div>
       <br></br>
       <br></br>
-      <TableComponent
+      <TableComponentMantine
         dataRows={rowResultsOfDB}
         sortedState={sortedState}
         setSortedState={setSortedState}
