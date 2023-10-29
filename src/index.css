@@ -14,7 +14,7 @@ code {
 
 /* --------- */
 
-.reps-table {
+/* .reps-table {
   table-layout: fixed;
   width: 90%;
   margin-left: 5%;
@@ -32,8 +32,24 @@ code {
   padding: 6px;
 }
 
-/* :hover in CSS not working for some reason so using in-line JSX... */
 #reps-table-header:hover {
   background-color: #2dbe89;
   cursor: pointer;
+}
+ */
+
+.ag-theme-alpine .ag-row-hover {
+  background-color: #2dbe89;
+  cursor: pointer;
+}
+
+/* Below code removes whitespace @ bottom of table if there are 3 or less rows (in this particular case) while leaving some whitespace to display 'No Rows to Show' (compare vs using 'unset' instead of 40px) */
+/* https://www.ag-grid.com/javascript-data-grid/grid-size/ */
+.ag-center-cols-viewport {
+  min-height: 40px !important;
+}
+
+.mantine-Select-input {
+  color: #2dbe89;
+  font-weight: 600;
 }

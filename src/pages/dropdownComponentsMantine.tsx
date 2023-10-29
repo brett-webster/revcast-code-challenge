@@ -36,12 +36,14 @@ const TeamDropdownFilterMantine = (props: teamPropsType): JSX.Element => {
 
   return (
     <>
-      <Select
-        placeholder="-- ALL TEAMS --"
-        data={expandedTeamList}
-        value={props.selectedTeam}
-        onChange={handleClickOnDropdownSelection}
-      />
+      <div className="dropdownList">
+        <Select
+          placeholder="-- ALL TEAMS --"
+          data={expandedTeamList}
+          value={props.selectedTeam}
+          onChange={handleClickOnDropdownSelection}
+        />
+      </div>
     </>
   );
 };
@@ -66,12 +68,14 @@ const CustomerDropdownFilterMantine = (
 
   return (
     <>
-      <Select
-        placeholder="-- ALL CUSTOMERS --"
-        data={expandedCustomerList}
-        value={props.selectedCustomer}
-        onChange={handleClickOnDropdownSelection}
-      />
+      <div className="dropdownList">
+        <Select
+          placeholder="-- ALL CUSTOMERS --"
+          data={expandedCustomerList}
+          value={props.selectedCustomer}
+          onChange={handleClickOnDropdownSelection}
+        />
+      </div>
     </>
   );
 };

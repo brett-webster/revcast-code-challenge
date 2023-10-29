@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
-// import { Paper, Container, Text, Title, Anchor } from "@mantine/core";
+import { useState, useEffect } from "react";
 import axios, { AxiosResponse } from "axios";
 
 import setStateOfMultipleItemsOnInitialPageLoad from "./setStateOfMultipleItemsOnInitialPageLoad";
 import fetchPOSTrequestFromCorrectEndpoint from "./fetchPOSTrequestFromCorrectEndpoint";
 // import TableComponent from "./TableComponent";
-import TableComponentMantine from "./TableComponentMantine";
+// import TableComponentMantine from "./TableComponentMantine";
+import TableComponentAGgrid from "./TableComponentAGgrid";
 // import {
 //   TeamDropdownFilter,
 //   CustomerDropdownFilter,
@@ -140,10 +140,10 @@ const LandingPage = (): JSX.Element => {
       </div>
       <br></br>
       <br></br>
-      <TableComponentMantine
+      <TableComponentAGgrid
         dataRows={rowResultsOfDB}
-        sortedState={sortedState}
-        setSortedState={setSortedState}
+        // sortedState={sortedState}
+        // setSortedState={setSortedState}
       />
     </>
   );
