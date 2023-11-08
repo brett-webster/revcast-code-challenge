@@ -15,19 +15,10 @@ import {
   GetUniqueSortedTeamList,
   GetUniqueSortedCustomerList,
   GetEntireUniqueSortedArrayOfObjs,
-  // FilterEntireDatabaseByTeamName,
-  // FilterEntireDatabaseByCustomerName,
   TeamSelectedCustomerBlank,
   CustomerSelectedTeamBlank,
   BothSelected,
-  // TeamSelectedCustomerBlank,
-  // CustomerSelectedTeamBlank,
-  // TeamDisplayedThenCustomerSelected,
-  // CustomerDisplayedThenTeamSelected,
 } from "./filteringLogicHelperFxns";
-
-// Importing helper fxn containing re-sorting logic
-// import { SortByColumnHeaderAscOrDesc } from "./sortingLogicHelperFxn";
 
 const app: Application = express();
 app.use(express.json());
@@ -46,11 +37,6 @@ export type nestedFilteredObjectsForClientType = {
   customerCurrentSelectionResults: augmentedRepObjectType[];
   combinedCurrentSelectionResults: augmentedRepObjectType[];
 };
-
-// export type sortedStateType = {
-//   columnHeadToSort: string;
-//   order: string;
-// };
 
 // --------
 
@@ -118,159 +104,20 @@ app.post(
       req.body; // destructuring
 
     let filteredResultsOfDB: augmentedRepObjectType[] = [];
-    if (selectedTeam === "" && selectedCustomer === "")
-      filteredResultsOfDB = fullRowResultsOfDBinCache;
-    // setting = to cached state here, no endpoint accessed
-    else {
-      if (selectedTeam !== "" && selectedCustomer === "")
-        filteredResultsOfDB = TeamSelectedCustomerBlank(selectedTeam);
 
-      if (selectedTeam === "" && selectedCustomer !== "")
-        filteredResultsOfDB = CustomerSelectedTeamBlank(selectedCustomer);
+    // Note: Case where selectedTeam & selectedCustomer both = "" is taken into account on client-side
+    if (selectedTeam !== "" && selectedCustomer === "")
+      filteredResultsOfDB = TeamSelectedCustomerBlank(selectedTeam);
 
-      if (selectedTeam !== "" && selectedCustomer !== "")
-        filteredResultsOfDB = BothSelected(selectedTeam, selectedCustomer);
-    }
+    if (selectedTeam === "" && selectedCustomer !== "")
+      filteredResultsOfDB = CustomerSelectedTeamBlank(selectedCustomer);
+
+    if (selectedTeam !== "" && selectedCustomer !== "")
+      filteredResultsOfDB = BothSelected(selectedTeam, selectedCustomer);
 
     return res.status(200).json(filteredResultsOfDB);
   }
 );
-
-// // NO team or customer filter applied (i.e. full DB is returned) but sorting is required on any basis OTHER than by id, ascending
-// // Format:  {firstName, lastName, email, teamName, totalRevenue, teamId, id}
-// app.post(
-//   "/api/allSelectedButNeedsReSorted",
-//   (req: Request, res: Response, next: NextFunction): Response => {
-//     const sortedState: sortedStateType = req.body.sortedState;
-
-//     const fullResultsOfDB: augmentedRepObjectType[] =
-//       GetEntireUniqueSortedArrayOfObjs(); // Helper fxn
-
-//     const threeFilteredObjectsForClient: nestedFilteredObjectsForClientType = {
-//       teamCurrentSelectionResults: [],
-//       customerCurrentSelectionResults: [],
-//       combinedCurrentSelectionResults: fullResultsOfDB,
-//     };
-
-//     const reSortedThreeFilteredObjectsForClient: nestedFilteredObjectsForClientType =
-//       SortByColumnHeaderAscOrDesc(sortedState, threeFilteredObjectsForClient);
-
-//     return res.status(200).json(reSortedThreeFilteredObjectsForClient);
-//   }
-// );
-
-// // --------
-
-// // Filter for ONLY team (swapping out current team selection or from blank):  assemble object in the below format to return to client
-// app.post(
-//   "/api/onlyTeamSelected",
-//   (req: Request, res: Response, next: NextFunction): Response => {
-//     const teamName: string = req.body.selectedTeam;
-//     const sortedState: sortedStateType = req.body.sortedState;
-
-//     const threeFilteredObjectsForClient: nestedFilteredObjectsForClientType =
-//       TeamSelectedCustomerBlank(teamName);
-
-//     const reSortedThreeFilteredObjectsForClient: nestedFilteredObjectsForClientType =
-//       SortByColumnHeaderAscOrDesc(sortedState, threeFilteredObjectsForClient);
-
-//     return res.status(200).json(reSortedThreeFilteredObjectsForClient);
-//   }
-// );
-
-// // --------
-
-// // Filter for ONLY customer (swapping out current customer selection or from blank):  assemble object in the below format to return to client
-// app.post(
-//   "/api/onlyCustomerSelected",
-//   (req: Request, res: Response, next: NextFunction): Response => {
-//     const customerName: string = req.body.selectedCustomer;
-//     const sortedState: sortedStateType = req.body.sortedState;
-
-//     const threeFilteredObjectsForClient: nestedFilteredObjectsForClientType =
-//       CustomerSelectedTeamBlank(customerName);
-
-//     const reSortedThreeFilteredObjectsForClient: nestedFilteredObjectsForClientType =
-//       SortByColumnHeaderAscOrDesc(sortedState, threeFilteredObjectsForClient);
-
-//     return res.status(200).json(reSortedThreeFilteredObjectsForClient);
-//   }
-// );
-
-// // --------
-
-// // Case #1:  Customer is currently selected and team selection is NEWLY added from blank
-// // Case #2:  BOTH customer AND team are currently selected & user selects a different, non-blank team
-// // Passing in:  (1) newly selected team name & (2) pre-filtered customer array of object results from front-end (persisted from previous filter -- persisting this data previously calculated upfront saves unneeded computation)
-// // 2 steps:  (1) Filter for team results on a stand-alone basis and save for future and (2) using passed in customer array of object results, filter for team and assign copy of results to combinedCurrentSelectionResults object, returning all to client
-// app.post(
-//   "/api/bothSelectedTeamJustChanged",
-//   (req: Request, res: Response, next: NextFunction): Response => {
-//     const { selectedTeam }: { selectedTeam: string } = req.body; // destructuring
-//     const {
-//       customerCurrentSelectionResults,
-//     }: { customerCurrentSelectionResults: augmentedRepObjectType[] } = req.body;
-//     const sortedState: sortedStateType = req.body.sortedState;
-
-//     const threeFilteredObjectsForClient: nestedFilteredObjectsForClientType =
-//       CustomerDisplayedThenTeamSelected(
-//         selectedTeam,
-//         customerCurrentSelectionResults
-//       );
-
-//     const reSortedThreeFilteredObjectsForClient: nestedFilteredObjectsForClientType =
-//       SortByColumnHeaderAscOrDesc(sortedState, threeFilteredObjectsForClient);
-
-//     return res.status(200).json(reSortedThreeFilteredObjectsForClient);
-//   }
-// );
-
-// // --------
-
-// // Case #1:  Team is currently selected and company selection is NEWLY added from blank
-// // Case #2:  BOTH customer AND team are currently selected & user selects a different, non-blank customer
-// // Passing in:  (1) newly selected company name & (2) pre-filtered team array of object results from front-end (persisted from previous filter -- persisting this data previously calculated upfront saves unneeded computation)
-// // 2 steps:  (1) Filter for company results on a stand-alone basis and save for future and (2) using passed in team array of object results, filter for company and assign copy of results to combinedCurrentSelectionResults object, returning all to client
-// app.post(
-//   "/api/bothSelectedCustomerJustChanged",
-//   (req: Request, res: Response, next: NextFunction): Response => {
-//     const { selectedCustomer }: { selectedCustomer: string } = req.body; // destructuring
-//     const {
-//       teamCurrentSelectionResults,
-//     }: { teamCurrentSelectionResults: augmentedRepObjectType[] } = req.body;
-//     const sortedState: sortedStateType = req.body.sortedState;
-
-//     const threeFilteredObjectsForClient: nestedFilteredObjectsForClientType =
-//       TeamDisplayedThenCustomerSelected(
-//         selectedCustomer,
-//         teamCurrentSelectionResults
-//       );
-
-//     const reSortedThreeFilteredObjectsForClient: nestedFilteredObjectsForClientType =
-//       SortByColumnHeaderAscOrDesc(sortedState, threeFilteredObjectsForClient);
-
-//     return res.status(200).json(reSortedThreeFilteredObjectsForClient);
-//   }
-// );
-
-// // --------
-
-// // ONLY endpoint relating to re-sorting by column head (ascending/descending)
-// app.post(
-//   "/api/reSortTable",
-//   (req: Request, res: Response, next: NextFunction): Response => {
-//     const { sortedState }: { sortedState: sortedStateType } = req.body; // destructuring
-//     const {
-//       threeFilteredObjectsCache,
-//     }: { threeFilteredObjectsCache: nestedFilteredObjectsForClientType } =
-//       req.body; // destructuring
-
-//     const reSortedThreeFilteredObjectsCache: nestedFilteredObjectsForClientType =
-//       SortByColumnHeaderAscOrDesc(sortedState, threeFilteredObjectsCache);
-
-//     return res.status(200).json(threeFilteredObjectsCache);
-//   }
-// );
 
 // --------
 

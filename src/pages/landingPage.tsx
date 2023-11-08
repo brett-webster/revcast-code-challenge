@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
-import { AxiosResponse } from "axios";
+import axios, { AxiosResponse } from "axios";
 
 import setStateOfMultipleItemsOnInitialPageLoad from "./setStateOfMultipleItemsOnInitialPageLoad";
-import fetchPOSTrequestFromCorrectEndpoint from "./fetchPOSTrequestFromCorrectEndpoint";
 
 import TableComponentAGgrid from "./TableComponentAGgrid";
 import {
@@ -11,11 +10,6 @@ import {
 } from "./dropdownComponentsMantine";
 
 import type { augmentedRepObjectType } from "../server";
-
-// type sortedStateType = {
-//   columnHeadToSort: string;
-//   order: string;
-// };
 
 // ---------
 
@@ -32,20 +26,9 @@ const LandingPage = (): JSX.Element => {
     augmentedRepObjectType[]
   >([]); // entirety of table is cached for future reference
 
-  // const [threeFilteredObjectsCache, setThreeFilteredObjectsCache] =
-  //   useState<nestedFilteredObjectsForClientType | null>(null); // Caching returned filters to re-use & spare repeat computations on backend
-
   // Below are used to (re)set team and customer choices using dropdown filters & track which most recent changed
   const [selectedTeam, setSelectedTeam] = useState<string | null>("");
   const [selectedCustomer, setSelectedCustomer] = useState<string | null>("");
-  // const [teamOrCustomerChangedFlag, setTeamOrCustomerChangedFlag] = useState<
-  //   string | null
-  // >("");
-
-  // const [sortedState, setSortedState] = useState<sortedStateType>({
-  //   columnHeadToSort: "id",
-  //   order: "Ascending",
-  // });
 
   // --------- useEffect hooks triggered under various scenarios --------
 
@@ -56,65 +39,40 @@ const LandingPage = (): JSX.Element => {
       setCustomerList,
       setRowResultsOfDB,
       setFullRowResultsOfDBtoCache
-      // setThreeFilteredObjectsCache
     ); // Helper fxn -- sets initial states on page load
   }, []); // end useEffect hook #1 (on initial load)
 
   // ---------
 
   // #2:  Below hook is triggered upon ANY state change in either dropdown selection
-  // Selection is routed using conditional logic to the proper endpoint, with updated filter results being returned for display
+  // Selection is routed to the below endpoint (if needed), with updated filter results being returned for display
   useEffect(() => {
-    // Conditionals here for all endpoints w/ async wrapper
+    // Conditional here routing to endpoint w/ async wrapper
     (async (): Promise<void> => {
-      const response: AxiosResponse | null =
-        await fetchPOSTrequestFromCorrectEndpoint(
-          selectedTeam,
-          selectedCustomer,
-          setRowResultsOfDB,
-          fullRowResultsOfDBinCache
-          // teamOrCustomerChangedFlag
-          // threeFilteredObjectsCache
-          // sortedState
-        ); // Helper fxn -- selects and pings appropriate server endpoint based on dropdown filter selections, returning processed data for display as needed (some pre-caching obviates this need in some cases)
+      // Ping appropriate server endpoint based on dropdown filter selections, returning processed data for display as needed (some pre-caching obviates this need in some cases)
+      let response: AxiosResponse | null = null;
 
-      // null response fails to trigger conditional (i.e. when both dropdowns are blank / '' selected)
+      if (selectedTeam === "" && selectedCustomer === "")
+        setRowResultsOfDB(fullRowResultsOfDBinCache);
+      // setting = to cached state here, no endpoint accessed
+      else
+        response = await axios.post(
+          "/api/getTeamAndCustomerSelectionsFiltered",
+          {
+            selectedTeam,
+            selectedCustomer,
+            fullRowResultsOfDBinCache,
+          }
+        );
+
+      // response = null fails to trigger conditional (i.e. when both dropdowns are blank / '' selected)
       if (response) {
         const rowResults: augmentedRepObjectType[] = response.data;
-
         setRowResultsOfDB(rowResults);
-        //   setThreeFilteredObjectsCache(threeFilteredObjects);
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedTeam, selectedCustomer]); // end useEffect hook #2 (onChange of team or customer)
-
-  // ---------
-
-  // // #3:  Below hook is triggered upon ANY state change in sorting by column
-  // // Selection is routed to the back end for re-sorting and returning the updated bundle for re-setting state & display
-  // useEffect(() => {
-  //   (async (): Promise<void> => {
-  //     const response: AxiosResponse | null = await axios.post(
-  //       "/api/reSortTable",
-  //       {
-  //         sortedState,
-  //         threeFilteredObjectsCache,
-  //       }
-  //     );
-
-  //     // null response fails to trigger conditional (similar code to above)
-  //     if (response?.data) {
-  //       const reSortedThreeFilteredObjects: nestedFilteredObjectsForClientType =
-  //         response.data;
-
-  //       setRowResultsOfDB(
-  //         reSortedThreeFilteredObjects.combinedCurrentSelectionResults
-  //       );
-  //       setThreeFilteredObjectsCache(reSortedThreeFilteredObjects);
-  //     }
-  //   })();
-  // }, [sortedState]); // end useEffect hook #3 (onChange of sorting by column header)
 
   // --------- Returning LandingPage component ----------
 
@@ -124,13 +82,11 @@ const LandingPage = (): JSX.Element => {
         <TeamDropdownFilterMantine
           teamList={teamList}
           setSelectedTeam={setSelectedTeam}
-          // setTeamOrCustomerChangedFlag={setTeamOrCustomerChangedFlag}
           selectedTeam={selectedTeam}
         />
         <CustomerDropdownFilterMantine
           customerList={customerList}
           setSelectedCustomer={setSelectedCustomer}
-          // setTeamOrCustomerChangedFlag={setTeamOrCustomerChangedFlag}
           selectedCustomer={selectedCustomer}
         />
       </div>
