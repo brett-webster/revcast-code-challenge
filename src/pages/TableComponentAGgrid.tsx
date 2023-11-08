@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useMemo } from "react";
+import { useMemo } from "react";
 import { AgGridReact } from "ag-grid-react"; // https://www.ag-grid.com/react-data-grid/ --- https://www.youtube.com/watch?v=Pr__B6HM_s4&list=PLsZlhayVgqNwHNHeqpCkSgdRV08xrKtzW --- https://youtu.be/pebXUHUdlos (filter advanced)
 import { ColDef } from "ag-grid-community";
 
@@ -11,14 +11,7 @@ import type { augmentedRepObjectType } from "../server";
 
 type tableComponentPropsType = {
   dataRows: augmentedRepObjectType[];
-  //   sortedState: sortedStateType;
-  //   setSortedState: Dispatch<SetStateAction<sortedStateType>>;
 };
-
-// export type sortedStateType = {
-//   columnHeadToSort: string;
-//   order: string;
-// };
 
 // Using distilled version of this:  https://www.ag-grid.com/javascript-data-grid/value-formatters/?ref=blog.ag-grid.com#value-formatters
 type paramsType = {
@@ -94,8 +87,6 @@ const TableComponentAGgrid = ({
       <div
         className="ag-theme-alpine"
         style={{
-          //   height: "75%", // 600
-          //   width: "90%", // 1150
           marginLeft: "5%",
           marginRight: "5%",
         }}

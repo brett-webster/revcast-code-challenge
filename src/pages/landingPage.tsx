@@ -1,25 +1,21 @@
 import { useState, useEffect } from "react";
-import axios, { AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 
 import setStateOfMultipleItemsOnInitialPageLoad from "./setStateOfMultipleItemsOnInitialPageLoad";
 import fetchPOSTrequestFromCorrectEndpoint from "./fetchPOSTrequestFromCorrectEndpoint";
-// import TableComponent from "./TableComponent";
-// import TableComponentMantine from "./TableComponentMantine";
+
 import TableComponentAGgrid from "./TableComponentAGgrid";
-// import {
-//   TeamDropdownFilter,
-//   CustomerDropdownFilter,
-// } from "./dropdownComponents";
 import {
   TeamDropdownFilterMantine,
   CustomerDropdownFilterMantine,
 } from "./dropdownComponentsMantine";
 
-import type {
-  augmentedRepObjectType,
-  nestedFilteredObjectsForClientType,
-} from "../server";
-import type { sortedStateType } from "./TableComponent";
+import type { augmentedRepObjectType } from "../server";
+
+// type sortedStateType = {
+//   columnHeadToSort: string;
+//   order: string;
+// };
 
 // ---------
 
@@ -36,20 +32,20 @@ const LandingPage = (): JSX.Element => {
     augmentedRepObjectType[]
   >([]); // entirety of table is cached for future reference
 
-  const [threeFilteredObjectsCache, setThreeFilteredObjectsCache] =
-    useState<nestedFilteredObjectsForClientType | null>(null); // Caching returned filters to re-use & spare repeat computations on backend
+  // const [threeFilteredObjectsCache, setThreeFilteredObjectsCache] =
+  //   useState<nestedFilteredObjectsForClientType | null>(null); // Caching returned filters to re-use & spare repeat computations on backend
 
   // Below are used to (re)set team and customer choices using dropdown filters & track which most recent changed
   const [selectedTeam, setSelectedTeam] = useState<string | null>("");
   const [selectedCustomer, setSelectedCustomer] = useState<string | null>("");
-  const [teamOrCustomerChangedFlag, setTeamOrCustomerChangedFlag] = useState<
-    string | null
-  >("");
+  // const [teamOrCustomerChangedFlag, setTeamOrCustomerChangedFlag] = useState<
+  //   string | null
+  // >("");
 
-  const [sortedState, setSortedState] = useState<sortedStateType>({
-    columnHeadToSort: "id",
-    order: "Ascending",
-  });
+  // const [sortedState, setSortedState] = useState<sortedStateType>({
+  //   columnHeadToSort: "id",
+  //   order: "Ascending",
+  // });
 
   // --------- useEffect hooks triggered under various scenarios --------
 
@@ -59,8 +55,8 @@ const LandingPage = (): JSX.Element => {
       setTeamList,
       setCustomerList,
       setRowResultsOfDB,
-      setFullRowResultsOfDBtoCache,
-      setThreeFilteredObjectsCache
+      setFullRowResultsOfDBtoCache
+      // setThreeFilteredObjectsCache
     ); // Helper fxn -- sets initial states on page load
   }, []); // end useEffect hook #1 (on initial load)
 
@@ -76,49 +72,49 @@ const LandingPage = (): JSX.Element => {
           selectedTeam,
           selectedCustomer,
           setRowResultsOfDB,
-          fullRowResultsOfDBinCache,
-          teamOrCustomerChangedFlag,
-          threeFilteredObjectsCache,
-          sortedState
+          fullRowResultsOfDBinCache
+          // teamOrCustomerChangedFlag
+          // threeFilteredObjectsCache
+          // sortedState
         ); // Helper fxn -- selects and pings appropriate server endpoint based on dropdown filter selections, returning processed data for display as needed (some pre-caching obviates this need in some cases)
 
       // null response fails to trigger conditional (i.e. when both dropdowns are blank / '' selected)
       if (response) {
-        const threeFilteredObjects: nestedFilteredObjectsForClientType =
-          response.data;
+        const rowResults: augmentedRepObjectType[] = response.data;
 
-        setRowResultsOfDB(threeFilteredObjects.combinedCurrentSelectionResults);
-        setThreeFilteredObjectsCache(threeFilteredObjects);
+        setRowResultsOfDB(rowResults);
+        //   setThreeFilteredObjectsCache(threeFilteredObjects);
       }
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedTeam, selectedCustomer]); // end useEffect hook #2 (onChange of team or customer)
 
   // ---------
 
-  // #3:  Below hook is triggered upon ANY state change in sorting by column
-  // Selection is routed to the back end for re-sorting and returning the updated bundle for re-setting state & display
-  useEffect(() => {
-    (async (): Promise<void> => {
-      const response: AxiosResponse | null = await axios.post(
-        "/api/reSortTable",
-        {
-          sortedState,
-          threeFilteredObjectsCache,
-        }
-      );
+  // // #3:  Below hook is triggered upon ANY state change in sorting by column
+  // // Selection is routed to the back end for re-sorting and returning the updated bundle for re-setting state & display
+  // useEffect(() => {
+  //   (async (): Promise<void> => {
+  //     const response: AxiosResponse | null = await axios.post(
+  //       "/api/reSortTable",
+  //       {
+  //         sortedState,
+  //         threeFilteredObjectsCache,
+  //       }
+  //     );
 
-      // null response fails to trigger conditional (similar code to above)
-      if (response?.data) {
-        const reSortedThreeFilteredObjects: nestedFilteredObjectsForClientType =
-          response.data;
+  //     // null response fails to trigger conditional (similar code to above)
+  //     if (response?.data) {
+  //       const reSortedThreeFilteredObjects: nestedFilteredObjectsForClientType =
+  //         response.data;
 
-        setRowResultsOfDB(
-          reSortedThreeFilteredObjects.combinedCurrentSelectionResults
-        );
-        setThreeFilteredObjectsCache(reSortedThreeFilteredObjects);
-      }
-    })();
-  }, [sortedState]); // end useEffect hook #3 (onChange of sorting by column header)
+  //       setRowResultsOfDB(
+  //         reSortedThreeFilteredObjects.combinedCurrentSelectionResults
+  //       );
+  //       setThreeFilteredObjectsCache(reSortedThreeFilteredObjects);
+  //     }
+  //   })();
+  // }, [sortedState]); // end useEffect hook #3 (onChange of sorting by column header)
 
   // --------- Returning LandingPage component ----------
 
@@ -128,23 +124,19 @@ const LandingPage = (): JSX.Element => {
         <TeamDropdownFilterMantine
           teamList={teamList}
           setSelectedTeam={setSelectedTeam}
-          setTeamOrCustomerChangedFlag={setTeamOrCustomerChangedFlag}
+          // setTeamOrCustomerChangedFlag={setTeamOrCustomerChangedFlag}
           selectedTeam={selectedTeam}
         />
         <CustomerDropdownFilterMantine
           customerList={customerList}
           setSelectedCustomer={setSelectedCustomer}
-          setTeamOrCustomerChangedFlag={setTeamOrCustomerChangedFlag}
+          // setTeamOrCustomerChangedFlag={setTeamOrCustomerChangedFlag}
           selectedCustomer={selectedCustomer}
         />
       </div>
       <br></br>
       <br></br>
-      <TableComponentAGgrid
-        dataRows={rowResultsOfDB}
-        // sortedState={sortedState}
-        // setSortedState={setSortedState}
-      />
+      <TableComponentAGgrid dataRows={rowResultsOfDB} />
     </>
   );
 };

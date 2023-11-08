@@ -3,10 +3,7 @@ import { salesOpps } from "./data/salesOppDb";
 import { teams } from "./data/teamsDb";
 
 import type { Representative, Team, SalesOpportunity } from "./data";
-import type {
-  augmentedRepObjectType,
-  nestedFilteredObjectsForClientType,
-} from "./server";
+import type { augmentedRepObjectType } from "./server";
 
 // --------
 
@@ -44,6 +41,24 @@ function GetEntireUniqueSortedArrayOfObjs(): augmentedRepObjectType[] {
 
   return fullResultsOfDB;
 }
+
+// // --------
+
+// // DELETE THESE NEW ADDITIONS --  fullRowResultsOfDBinCache: augmentedRepObjectType[]
+// function GetFilteredArrayOfObjs(
+//   selectedTeam: string,
+//   selectedCustomer: string,
+//   fullRowResultsOfDBinCache: augmentedRepObjectType[]
+// ): augmentedRepObjectType[] {
+//   const filteredResultsOfDBbyTeam: augmentedRepObjectType[] =
+//     FilterDatabaseByTeamName(selectedTeam, fullRowResultsOfDBinCache);
+
+//   const filteredResultsOfDB: augmentedRepObjectType[] =
+//     FilterDatabaseByCustomerName(selectedCustomer, filteredResultsOfDBbyTeam); // results filtered by team name is input to apply filter by customer
+//   // ** HERE **
+
+//   return filteredResultsOfDB;
+// }
 
 // ----------------------------
 
@@ -161,117 +176,51 @@ function FilterEntireDatabaseByCustomerName(
 
 // ------------------------
 
-function TeamNewlySelectedOrReplacedAndCustomerBlank(
-  teamName: string
-): nestedFilteredObjectsForClientType {
+function TeamSelectedCustomerBlank(teamName: string): augmentedRepObjectType[] {
   const finalRepArrayForDisplay: augmentedRepObjectType[] =
     FilterEntireDatabaseByTeamName(teamName); // invoking 'sub-helper' fxn above
 
-  // Bundling the 3 objects below to send back to client
-  const teamCurrentSelectionResults: augmentedRepObjectType[] =
-    finalRepArrayForDisplay.slice();
-  const customerCurrentSelectionResults: augmentedRepObjectType[] = [];
-  const combinedCurrentSelectionResults: augmentedRepObjectType[] =
-    finalRepArrayForDisplay.slice();
+  // // Bundling the 3 objects below to send back to client
+  // const teamCurrentSelectionResults: augmentedRepObjectType[] =
+  //   finalRepArrayForDisplay.slice();
+  // const customerCurrentSelectionResults: augmentedRepObjectType[] = [];
+  // const combinedCurrentSelectionResults: augmentedRepObjectType[] =
+  //   finalRepArrayForDisplay.slice();
 
-  return {
-    teamCurrentSelectionResults,
-    customerCurrentSelectionResults,
-    combinedCurrentSelectionResults,
-  };
+  return finalRepArrayForDisplay;
 }
 
 // --------
 
-function CustomerNewlySelectedOrReplacedAndTeamBlank(
+function CustomerSelectedTeamBlank(
   customerName: string
-): nestedFilteredObjectsForClientType {
+): augmentedRepObjectType[] {
   const finalRepArrayForDisplay: augmentedRepObjectType[] =
     FilterEntireDatabaseByCustomerName(customerName); // invoking 'sub-helper' fxn above
 
-  // Bundling the 3 objects below to send back to client
-  const teamCurrentSelectionResults: augmentedRepObjectType[] = [];
-  const customerCurrentSelectionResults: augmentedRepObjectType[] =
-    finalRepArrayForDisplay.slice();
-  const combinedCurrentSelectionResults: augmentedRepObjectType[] =
-    finalRepArrayForDisplay.slice();
+  // // Bundling the 3 objects below to send back to client
+  // const teamCurrentSelectionResults: augmentedRepObjectType[] = [];
+  // const customerCurrentSelectionResults: augmentedRepObjectType[] =
+  //   finalRepArrayForDisplay.slice();
+  // const combinedCurrentSelectionResults: augmentedRepObjectType[] =
+  //   finalRepArrayForDisplay.slice();
 
-  return {
-    teamCurrentSelectionResults,
-    customerCurrentSelectionResults,
-    combinedCurrentSelectionResults,
-  };
+  return finalRepArrayForDisplay;
 }
 
 // --------
 
-function TeamDisplayedThenCustomerSelected(
-  customerName: string,
-  teamCurrentSelectionResults: augmentedRepObjectType[]
-): nestedFilteredObjectsForClientType {
-  // Invoke 'sub-helper' fxn to generate results filtered by customer name from entirety of databases
-  const finalRepArrayForStorage: augmentedRepObjectType[] =
-    FilterEntireDatabaseByCustomerName(customerName); // invoking 'sub-helper' fxn above
-
-  // Below logic uses the teamCurrentSelectionResults and filters out only the newly selected customer (assuming not blank / '' selected)
-  // Iterate thru teamCurrentSelectionResults, for each unique rep re-calculate aggregate revenue figure so that it is ONLY for the newly selected customer
-  const finalRepArrayForDisplay: augmentedRepObjectType[] = [];
-  teamCurrentSelectionResults.forEach((repObject: augmentedRepObjectType) => {
-    const repID: number = repObject.id;
-
-    // ONLY filter if an actual customer name has been selected, defaulting to entire database if not (i.e. if reset to blank or '')
-    let currentRepOnlySalesOpps: SalesOpportunity[] = salesOpps.slice();
-    if (customerName !== "") {
-      // Aggregate revenue for current rep by referencing salesOpps array & filtering for customerName
-      currentRepOnlySalesOpps = salesOpps.filter(
-        (salesOpp: SalesOpportunity) => salesOpp.repId === repID
-      );
-    }
-
-    const currentRepOnlySalesOppsForSelectCustomer: SalesOpportunity[] =
-      currentRepOnlySalesOpps.filter(
-        (salesOpp: SalesOpportunity) => salesOpp.customerName === customerName
-      );
-
-    // Aggregate revenue for each rep using reduce method
-    const totalRevenue: number =
-      currentRepOnlySalesOppsForSelectCustomer.reduce(
-        (total: number, current: SalesOpportunity) => {
-          return total + current.revenue;
-        },
-        0
-      );
-
-    const augmentedRepObject: augmentedRepObjectType = {
-      ...repObject,
-      totalRevenue: totalRevenue,
-    };
-    finalRepArrayForDisplay.push(augmentedRepObject);
-  }); // ** end forEach **
-
-  // Bundling the 3 objects below to send back to client
-  // const teamCurrentSelectionResults;  // UNCHANGED
-  const customerCurrentSelectionResults: augmentedRepObjectType[] =
-    finalRepArrayForStorage.slice();
-  const combinedCurrentSelectionResults: augmentedRepObjectType[] =
-    finalRepArrayForDisplay.slice();
-
-  return {
-    teamCurrentSelectionResults,
-    customerCurrentSelectionResults,
-    combinedCurrentSelectionResults,
-  };
-}
-
-// --------
-
-function CustomerDisplayedThenTeamSelected(
+function BothSelected(
   teamName: string,
-  customerCurrentSelectionResults: augmentedRepObjectType[]
-): nestedFilteredObjectsForClientType {
-  // Invoke 'sub-helper' fxn to generate results filtered by team name from entirety of databases
-  const finalRepArrayForStorage: augmentedRepObjectType[] =
-    FilterEntireDatabaseByTeamName(teamName); // invoking 'sub-helper' fxn above
+  customerName: string
+): augmentedRepObjectType[] {
+  // // Invoke 'sub-helper' fxn to generate results filtered by team name from entirety of databases
+  // const finalRepArrayForStorage: augmentedRepObjectType[] =
+  //   FilterEntireDatabaseByTeamName(teamName); // invoking 'sub-helper' fxn above
+
+  // Invoke 'sub-helper' fxn to first generate results filtered by customer name from entirety of databases
+  const customerCurrentSelectionResults: augmentedRepObjectType[] =
+    CustomerSelectedTeamBlank(customerName);
 
   // ONLY filter if an actual team name has been selected, defaulting to entire database if not (i.e. if reset to blank or '')
   let finalRepArrayForDisplay: augmentedRepObjectType[] =
@@ -283,19 +232,109 @@ function CustomerDisplayedThenTeamSelected(
     );
   }
 
-  // Bundling the 3 objects below to send back to client
-  const teamCurrentSelectionResults: augmentedRepObjectType[] =
-    finalRepArrayForStorage.slice();
-  // const customerCurrentSelectionResults;  // UNCHANGED
-  const combinedCurrentSelectionResults: augmentedRepObjectType[] =
-    finalRepArrayForDisplay.slice();
+  // // Bundling the 3 objects below to send back to client
+  // const teamCurrentSelectionResults: augmentedRepObjectType[] =
+  //   finalRepArrayForStorage.slice();
+  // // const customerCurrentSelectionResults;  // UNCHANGED
+  // const combinedCurrentSelectionResults: augmentedRepObjectType[] =
+  //   finalRepArrayForDisplay.slice();
 
-  return {
-    teamCurrentSelectionResults,
-    customerCurrentSelectionResults,
-    combinedCurrentSelectionResults,
-  };
+  return finalRepArrayForDisplay;
 }
+
+// --------
+
+// function TeamDisplayedThenCustomerSelected(
+//   customerName: string,
+//   teamCurrentSelectionResults: augmentedRepObjectType[]
+// ): nestedFilteredObjectsForClientType {
+//   // Invoke 'sub-helper' fxn to generate results filtered by customer name from entirety of databases
+//   const finalRepArrayForStorage: augmentedRepObjectType[] =
+//     FilterEntireDatabaseByCustomerName(customerName); // invoking 'sub-helper' fxn above
+
+//   // Below logic uses the teamCurrentSelectionResults and filters out only the newly selected customer (assuming not blank / '' selected)
+//   // Iterate thru teamCurrentSelectionResults, for each unique rep re-calculate aggregate revenue figure so that it is ONLY for the newly selected customer
+//   const finalRepArrayForDisplay: augmentedRepObjectType[] = [];
+//   teamCurrentSelectionResults.forEach((repObject: augmentedRepObjectType) => {
+//     const repID: number = repObject.id;
+
+//     // ONLY filter if an actual customer name has been selected, defaulting to entire database if not (i.e. if reset to blank or '')
+//     let currentRepOnlySalesOpps: SalesOpportunity[] = salesOpps.slice();
+//     if (customerName !== "") {
+//       // Aggregate revenue for current rep by referencing salesOpps array & filtering for customerName
+//       currentRepOnlySalesOpps = salesOpps.filter(
+//         (salesOpp: SalesOpportunity) => salesOpp.repId === repID
+//       );
+//     }
+
+//     const currentRepOnlySalesOppsForSelectCustomer: SalesOpportunity[] =
+//       currentRepOnlySalesOpps.filter(
+//         (salesOpp: SalesOpportunity) => salesOpp.customerName === customerName
+//       );
+
+//     // Aggregate revenue for each rep using reduce method
+//     const totalRevenue: number =
+//       currentRepOnlySalesOppsForSelectCustomer.reduce(
+//         (total: number, current: SalesOpportunity) => {
+//           return total + current.revenue;
+//         },
+//         0
+//       );
+
+//     const augmentedRepObject: augmentedRepObjectType = {
+//       ...repObject,
+//       totalRevenue: totalRevenue,
+//     };
+//     finalRepArrayForDisplay.push(augmentedRepObject);
+//   }); // ** end forEach **
+
+//   // Bundling the 3 objects below to send back to client
+//   // const teamCurrentSelectionResults;  // UNCHANGED
+//   const customerCurrentSelectionResults: augmentedRepObjectType[] =
+//     finalRepArrayForStorage.slice();
+//   const combinedCurrentSelectionResults: augmentedRepObjectType[] =
+//     finalRepArrayForDisplay.slice();
+
+//   return {
+//     teamCurrentSelectionResults,
+//     customerCurrentSelectionResults,
+//     combinedCurrentSelectionResults,
+//   };
+// }
+
+// // --------
+
+// function CustomerDisplayedThenTeamSelected(
+//   teamName: string,
+//   customerCurrentSelectionResults: augmentedRepObjectType[]
+// ): nestedFilteredObjectsForClientType {
+//   // Invoke 'sub-helper' fxn to generate results filtered by team name from entirety of databases
+//   const finalRepArrayForStorage: augmentedRepObjectType[] =
+//     FilterEntireDatabaseByTeamName(teamName); // invoking 'sub-helper' fxn above
+
+//   // ONLY filter if an actual team name has been selected, defaulting to entire database if not (i.e. if reset to blank or '')
+//   let finalRepArrayForDisplay: augmentedRepObjectType[] =
+//     customerCurrentSelectionResults.slice();
+//   if (teamName !== "") {
+//     // Below logic uses the customerCurrentSelectionResults and simply filters out only the newly selected team name if not blank / '' (no aggregate revenue re-calc is required, i.e. it will remain unchanged from prior calc)
+//     finalRepArrayForDisplay = customerCurrentSelectionResults.filter(
+//       (repObj: augmentedRepObjectType) => repObj.teamName === teamName
+//     );
+//   }
+
+//   // Bundling the 3 objects below to send back to client
+//   const teamCurrentSelectionResults: augmentedRepObjectType[] =
+//     finalRepArrayForStorage.slice();
+//   // const customerCurrentSelectionResults;  // UNCHANGED
+//   const combinedCurrentSelectionResults: augmentedRepObjectType[] =
+//     finalRepArrayForDisplay.slice();
+
+//   return {
+//     teamCurrentSelectionResults,
+//     customerCurrentSelectionResults,
+//     combinedCurrentSelectionResults,
+//   };
+// }
 
 // ----------------------
 
@@ -303,10 +342,13 @@ export {
   GetUniqueSortedTeamList,
   GetUniqueSortedCustomerList,
   GetEntireUniqueSortedArrayOfObjs,
-  TeamNewlySelectedOrReplacedAndCustomerBlank,
-  CustomerNewlySelectedOrReplacedAndTeamBlank,
-  TeamDisplayedThenCustomerSelected,
-  CustomerDisplayedThenTeamSelected,
+  // FilterEntireDatabaseByTeamName,
+  // FilterEntireDatabaseByCustomerName,
+  TeamSelectedCustomerBlank,
+  CustomerSelectedTeamBlank,
+  BothSelected,
+  // TeamDisplayedThenCustomerSelected,
+  // CustomerDisplayedThenTeamSelected,
 };
 
 // --------

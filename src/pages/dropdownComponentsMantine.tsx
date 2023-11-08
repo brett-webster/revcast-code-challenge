@@ -7,14 +7,14 @@ import { Select } from "@mantine/core"; // https://mantine.dev/core/select/
 type teamPropsType = {
   teamList: string[];
   setSelectedTeam: Dispatch<SetStateAction<string | null>>;
-  setTeamOrCustomerChangedFlag: Dispatch<SetStateAction<string | null>>;
+  // setTeamOrCustomerChangedFlag: Dispatch<SetStateAction<string | null>>;
   selectedTeam: string | null;
 };
 
 type customerPropsType = {
   customerList: string[];
   setSelectedCustomer: Dispatch<SetStateAction<string | null>>;
-  setTeamOrCustomerChangedFlag: Dispatch<SetStateAction<string | null>>;
+  // setTeamOrCustomerChangedFlag: Dispatch<SetStateAction<string | null>>;
   selectedCustomer: string | null;
 };
 
@@ -31,7 +31,7 @@ const TeamDropdownFilterMantine = (props: teamPropsType): JSX.Element => {
     listItem === "-- ALL TEAMS --"
       ? props.setSelectedTeam("")
       : props.setSelectedTeam(listItem); // set TEAM state to selection (reset to "" in case ALL is selected)
-    props.setTeamOrCustomerChangedFlag("TEAM changed"); // re-set flag
+    // props.setTeamOrCustomerChangedFlag("TEAM changed"); // re-set flag
   };
 
   return (
@@ -63,7 +63,7 @@ const CustomerDropdownFilterMantine = (
     listItem === "-- ALL CUSTOMERS --"
       ? props.setSelectedCustomer("")
       : props.setSelectedCustomer(listItem); // set CUSTOMER state to selection (reset to "" in case ALL is selected)
-    props.setTeamOrCustomerChangedFlag("CUSTOMER changed"); // re-set flag
+    // props.setTeamOrCustomerChangedFlag("CUSTOMER changed"); // re-set flag
   };
 
   return (

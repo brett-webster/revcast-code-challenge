@@ -14,30 +14,6 @@ code {
 
 /* --------- */
 
-/* .reps-table {
-  table-layout: fixed;
-  width: 90%;
-  margin-left: 5%;
-  margin-right: 5%;
-  margin-top: 5%;
-  border-collapse: collapse;
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
-  font-size: 12px;
-  font-weight: 400;
-}
-
-.reps-table-cell {
-  border: 1px solid rgb(240, 240, 240);
-  text-align: left;
-  padding: 6px;
-}
-
-#reps-table-header:hover {
-  background-color: #2dbe89;
-  cursor: pointer;
-}
- */
-
 .ag-theme-alpine .ag-row-hover {
   background-color: #2dbe89;
   cursor: pointer;
