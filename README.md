@@ -106,3 +106,5 @@ The ‘Revcast App’ uses the sales rep JSON data found in the `src/api` direct
 - Supertest
 - Axios
 - Cypress
+- Mantine
+- AG Grid
